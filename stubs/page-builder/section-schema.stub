@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Filament\PageBuilder\Sections;
+
+use App\Concerns\BuildsSectionSchema;
+use App\Contracts\SectionSchema;
+use Filament\Forms\Components\RichEditor;
+use Filament\Support\Icons\Heroicon;
+
+final class {{name}}SectionSchema implements SectionSchema
+{
+    use BuildsSectionSchema;
+
+    public static function getSlug(): string
+    {
+        return '{{slug}}';
+    }
+
+    public static function getLabel(): string
+    {
+        return '{{name}}';
+    }
+
+    public static function getIcon(): Heroicon
+    {
+        return Heroicon::FaceSmile;
+    }
+
+    public static function getSchema(): array
+    {
+        return [
+            //
+        ];
+    }
+}

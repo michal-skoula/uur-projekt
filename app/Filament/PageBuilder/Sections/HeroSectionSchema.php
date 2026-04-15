@@ -34,7 +34,6 @@ final class HeroSectionSchema implements SectionSchema
         return [
             TextInput::make('heading')
                 ->label('Heading (H1)')
-                ->helperText('Use **text** for brand color, <<text>> for muted, *text* for italic.')
                 ->columnSpanFull(),
             Textarea::make('description')
                 ->label('Description')

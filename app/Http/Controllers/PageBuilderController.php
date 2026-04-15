@@ -16,7 +16,13 @@ class PageBuilderController extends Controller
     {
         $page = ResolvePageFromPath::handle($path);
 
-        abort_if($page === null || ! $page->is_published, 404);
+        if (! $page) {
+            abort(404);
+        }
+
+        if (! $page->is_published) {
+            abort(404); // todo: add override for admins to still be able to access
+        }
 
         return view('page-builder.page', [
             'page' => $page,
@@ -31,24 +37,25 @@ class PageBuilderController extends Controller
     {
         $rendered = [];
 
-        if(! $page->content) {
+        if (! $page->content) {
             return $rendered;
         }
 
-        foreach ($page->content as [$slug => $section]) {
-            if(! PageBuilder::isValidSection($slug)) {
+        foreach ($page->content as $section) {
+            $slug = $section['type'];
+            $data = $section['data'];
+
+            if (! PageBuilder::isValidSection($slug)) {
                 Log::warning("Invalid section {$slug} found on page {$page->title}");
-            }
-
-
-            if (! is_array($section) || ! isset($section['type']) || ! is_string($section['type'])) {
-                Log::warning('Malformed section in page '.$page->id, ['section' => $section]);
 
                 continue;
             }
 
-            $slug = $section['type'];
-            $data = is_array($section['data'] ?? null) ? $section['data'] : [];
+            if (! is_array($data)) {
+                Log::warning("Malformed data for section {$slug} found on page {$page->title}");
+
+                continue;
+            }
 
             if (PageBuilder::isDisabled($slug)) {
                 continue;

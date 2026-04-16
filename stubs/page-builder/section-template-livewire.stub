@@ -1,17 +1,31 @@
 <?php
 
-namespace App\View\PageBuilder\Sections;
+namespace App\Livewire;
 
 use App\Contracts\SectionTemplate;
 use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
-final class {{name}}SectionTemplate implements SectionTemplate
+class {{name}} extends Component implements SectionTemplate
 {
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    public function render(array $data): View
+    /** @var array<string, mixed> */
+    public array $data = [];
+
+    public function mount(array $data): void
     {
-        return view('page-builder.sections.{{slug}}', ['data' => $data]);
+        $this->prepareData($data);
+    }
+
+    public function prepareData(array $data): static
+    {
+        // Transform raw CMS data into component properties here
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function render(): View
+    {
+        return view('livewire.{{livewireTag}}');
     }
 }

@@ -2,14 +2,16 @@
 
 namespace App\Helpers;
 
+use App\Contracts\SectionSchema;
 use App\Contracts\SectionTemplate;
 use App\Exceptions\PageBuilderSectionRenderException;
 use App\Exceptions\PageBuilderSectionResolutionException;
 use Filament\Forms\Components\Builder\Block;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\HtmlString;
 use Livewire\Component as LivewireComponent;
-use Illuminate\View\Component as BladeComponent;
+use Livewire\Livewire;
 
 final class PageBuilderHelper
 {
@@ -22,36 +24,32 @@ final class PageBuilderHelper
     }
 
     /**
-     * @param string $section kebab-case slug of section
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      *
-     * @return View
-     * @throws PageBuilderSectionResolutionException Unable to find section in config registry
-     * @throws PageBuilderSectionRenderException Section does not support rendering
+     * @throws PageBuilderSectionResolutionException
+     * @throws PageBuilderSectionRenderException
      */
-    public static function renderSection(string $section, array $data): View
+    public static function renderSection(string $section, array $data): View|HtmlString
     {
-        if(! self::isValidSection($section)) {
+        if (! self::isValidSection($section)) {
             throw new PageBuilderSectionResolutionException("Unable to render section '{$section}'.");
         }
 
-        if(! self::sectionTemplate($section)) {
+        $templateClass = self::sectionTemplate($section);
+
+        if ($templateClass === null) {
             throw new PageBuilderSectionRenderException("Section '{$section}' has no associated frontend template.");
         }
 
-        $templateClass = self::sectionTemplate($section);
-        $template = app(self::sectionTemplate($section));
-
-//        return match()
-        switch($template) {
-            case is_subclass_of($templateClass, LivewireComponent::class):
-                echo 'livewire';
-                break;
-            case is_subclass_of($templateClass, BladeComponent::class):
-                echo 'blade';
-                break;
-            default:
-                throw new PageBuilderSectionRenderException("Section {$section} has no defined hydration strategy");
+        // Rendering for each type of frontend SectionTemplate
+        if(is_subclass_of($templateClass, LivewireComponent::class)) {
+            return new HtmlString(Livewire::mount($templateClass, ['data' => $data]));
+        }
+        else if(is_subclass_of($templateClass, SectionTemplate::class)) {
+            return app($templateClass)->prepareData($data)->render();
+        }
+        else {
+            throw new PageBuilderSectionRenderException("Section '{$section}' has no defined rendering strategy.");
         }
     }
 

@@ -59,11 +59,13 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             $args = $this->getValidatedArguments();
         } catch (RuntimeException $e) {
             $this->components->error($e->getMessage());
+
             return self::FAILURE;
         }
 
         if (PageBuilderHelper::isValidSection($args['slug'])) {
             $this->components->error('Section "'.$args['slug'].'" already exists.');
+
             return self::INVALID;
         }
 
@@ -76,6 +78,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             $this->components->error(
                 "Cannot scaffold: the following files already exist:\n  - ".implode("\n  - ", $collisions)
             );
+
             return self::INVALID;
         }
 
@@ -83,6 +86,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
         $configSnapshot = @file_get_contents($configPath); // note: `@` suppresses all stderr stuff
         if ($configSnapshot === false) {
             $this->components->error('Unable to read config file at '.$configPath);
+
             return self::FAILURE;
         }
 
@@ -106,8 +110,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             $this->components->success('🎉  New section scaffolded successfully!');
 
             return self::SUCCESS;
-        }
-        catch (Throwable $e) {
+        } catch (Throwable $e) {
             $this->rollback($created, $configPath, $configSnapshot);
             $this->components->error('Scaffolding failed and was rolled back: '.$e->getMessage());
 
@@ -126,7 +129,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             base_path("{$this->schemasDirectory}/{$name}SectionSchema.php"),
         ];
 
-        if ($type === SectionTemplateType::BLADE || $type === SectionTemplateType::LIVEWIRE) {
+        if ($type === SectionTemplateType::BLADE) {
             $paths[] = base_path("{$this->templatesDirectory}/{$name}SectionTemplate.php");
             $paths[] = base_path("{$this->viewsDirectory}/{$slug}.blade.php");
         }
@@ -135,8 +138,6 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             $kebab = Str::kebab($name);
             $paths[] = app_path("Livewire/{$name}.php");
             $paths[] = resource_path("views/livewire/{$kebab}.blade.php");
-            // Also check SFC path to catch stale components regardless of Livewire config
-            $paths[] = resource_path("views/components/{$kebab}.blade.php");
             if ($withTest) {
                 $paths[] = base_path("tests/Feature/Livewire/{$name}Test.php");
             }
@@ -196,41 +197,41 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
      */
     private function generateLiveWireTemplate(string $name, string $slug, bool $withTest, array &$created): string
     {
-        $classPath = base_path($this->templatesDirectory.'/'.$name.'SectionTemplate.php');
-        $viewPath = base_path($this->viewsDirectory.'/'.$slug.'.blade.php');
+        $kebab = Str::kebab($name);
+        $classPath = app_path("Livewire/{$name}.php");
+        $viewPath = resource_path("views/livewire/{$kebab}.blade.php");
 
         $this->writeFileFromStub($classPath, 'section-template-livewire', [
             'name' => $name,
-            'slug' => $slug,
-        ], "template {$name}SectionTemplate");
+            'livewireTag' => $kebab,
+        ], "component {$name}");
         $created[] = $classPath;
 
         $this->writeFileFromStub($viewPath, 'section-view-livewire', [
+            'name' => $name,
             'slug' => $slug,
-            'livewireTag' => Str::kebab($name),
-        ], "view {$slug}.blade.php");
+        ], "view livewire/{$kebab}.blade.php");
         $created[] = $viewPath;
 
-        $params = ['name' => $name, '--class' => true, '--quiet' => true];
         if ($withTest) {
-            $params['--test'] = true;
-        }
+            // make:livewire will warn about the existing component but still generates the test file.
+            // We use our own stub for the component to include SectionTemplate and prepareData().
+            $exitCode = Artisan::call('make:livewire', [
+                'name' => $name,
+                '--class' => true,
+                '--test' => true,
+                '--quiet' => true,
+            ]);
 
-        $exitCode = Artisan::call('make:livewire', $params);
-        if ($exitCode !== 0) {
-            throw new RuntimeException(
-                "make:livewire failed (exit {$exitCode}):\n".trim(Artisan::output())
-            );
-        }
+            if ($exitCode !== 0) {
+                throw new RuntimeException(
+                    "make:livewire --test failed (exit {$exitCode}):\n".trim(Artisan::output())
+                );
+            }
 
-        $created[] = app_path("Livewire/{$name}.php");
-        $created[] = resource_path('views/livewire/'.Str::kebab($name).'.blade.php');
-        if ($withTest) {
             $created[] = base_path("tests/Feature/Livewire/{$name}Test.php");
+            $this->components->success("Generated test {$name}Test");
         }
-
-        $label = "component {$name}" . ($withTest ? " & {$name}Test" : '');
-        $this->components->success("Generated {$label}");
 
         return $this->getFullyQualifiedClassNameFromPath($classPath);
     }

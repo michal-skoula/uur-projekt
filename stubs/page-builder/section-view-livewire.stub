@@ -1,1 +1,3 @@
-<livewire:{{livewireTag}} :data="$data" />
+<section id="{{slug}}">
+    {{-- {{name}} section markup --}}
+</section>

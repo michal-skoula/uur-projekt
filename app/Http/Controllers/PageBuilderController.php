@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Actions\ResolvePageFromPath;
-use App\Contracts\SectionTemplate;
 use App\Helpers\PageBuilderHelper;
 use App\Models\Page;
-use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
 
 class PageBuilderController extends Controller
 {
@@ -21,7 +20,6 @@ class PageBuilderController extends Controller
         }
 
         /** @var Page $page */
-
         if (! $page->is_published) {
             abort(404); // todo: add override for admins to still be able to access
         }
@@ -33,7 +31,7 @@ class PageBuilderController extends Controller
     }
 
     /**
-     * @return array<View|Closure|string>
+     * @return array<View|HtmlString>
      */
     private function renderSections(Page $page): array
     {
@@ -49,11 +47,13 @@ class PageBuilderController extends Controller
 
             if (! PageBuilderHelper::isValidSection($slug)) {
                 Log::warning("Invalid section {$slug} found on page {$page->title}");
+
                 continue;
             }
 
             if (! is_array($data)) {
                 Log::warning("Malformed data for section {$slug} found on page {$page->title}");
+
                 continue;
             }
 
@@ -61,15 +61,8 @@ class PageBuilderController extends Controller
                 continue;
             }
 
-            $templateClass = PageBuilderHelper::sectionTemplate($slug);
-            if ($templateClass === null) {
-                Log::warning("No template registered for section '{$slug}'");
-                continue;
-            }
-
-            /** @var SectionTemplate $template */
-            $template = app($templateClass);
-            $rendered[] = $template->render($data);
+            // todo: handle exceptions on render
+            $rendered[] = PageBuilderHelper::renderSection($slug, $data);
         }
 
         return $rendered;

@@ -68,11 +68,14 @@ it('scaffolds a livewire section including the livewire component', function () 
     ])->assertExitCode(0);
 
     expect(File::exists($paths['schema']))->toBeTrue();
-    expect(File::exists($paths['template']))->toBeTrue();
-    expect(File::exists($paths['view']))->toBeTrue();
+    expect(File::exists($paths['template']))->toBeFalse();
+    expect(File::exists($paths['view']))->toBeFalse();
     expect(File::exists($paths['livewireClass']))->toBeTrue();
     expect(File::exists($paths['livewireView']))->toBeTrue();
     expect(File::exists($paths['livewireTest']))->toBeFalse();
+
+    $config = File::get($this->configPath);
+    expect($config)->toContain('\\App\\Livewire\\FixtureLive::class');
 });
 
 it('scaffolds a livewire section with a test file when --test is passed', function () {

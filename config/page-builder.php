@@ -1,14 +1,5 @@
 <?php
 
-use App\Filament\PageBuilder\Sections\BallsSectionSchema;
-use App\Filament\PageBuilder\Sections\HeeSectionSchema;
-use App\Filament\PageBuilder\Sections\HelloSectionSchema;
-use App\Filament\PageBuilder\Sections\HiSectionSchema;
-use App\View\PageBuilder\Sections\BallsSectionTemplate;
-use App\View\PageBuilder\Sections\HeeSectionTemplate;
-use App\View\PageBuilder\Sections\HelloSectionTemplate;
-use App\View\PageBuilder\Sections\HiSectionTemplate;
-
 return [
     /*
     |--------------------------------------------------------------------------
@@ -31,14 +22,6 @@ return [
     |
     */
     'sections' => [
-        'news' => [
-            'schema' => \App\Filament\PageBuilder\Sections\NewsSectionSchema::class,
-            'template' => \App\View\PageBuilder\Sections\NewsSectionTemplate::class,
-        ],
-        'news-two' => [
-            'schema' => \App\Filament\PageBuilder\Sections\NewsTwoSectionSchema::class,
-            'template' => \App\View\PageBuilder\Sections\NewsTwoSectionTemplate::class,
-        ],
         // @sections-end [DO NOT TOUCH]
     ],
 

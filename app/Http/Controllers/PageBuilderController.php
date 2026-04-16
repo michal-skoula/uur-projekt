@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\ResolvePageFromPath;
 use App\Contracts\SectionTemplate;
-use App\Helpers\PageBuilder;
+use App\Helpers\PageBuilderHelper;
 use App\Models\Page;
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -20,11 +20,13 @@ class PageBuilderController extends Controller
             abort(404);
         }
 
+        /** @var Page $page */
+
         if (! $page->is_published) {
             abort(404); // todo: add override for admins to still be able to access
         }
 
-        return view('page-builder.page', [
+        return view('page-builder.page-builder', [
             'page' => $page,
             'sections' => $this->renderSections($page),
         ]);
@@ -38,33 +40,30 @@ class PageBuilderController extends Controller
         $rendered = [];
 
         if (! $page->content) {
-            return $rendered;
+            return [];
         }
 
         foreach ($page->content as $section) {
             $slug = $section['type'];
             $data = $section['data'];
 
-            if (! PageBuilder::isValidSection($slug)) {
+            if (! PageBuilderHelper::isValidSection($slug)) {
                 Log::warning("Invalid section {$slug} found on page {$page->title}");
-
                 continue;
             }
 
             if (! is_array($data)) {
                 Log::warning("Malformed data for section {$slug} found on page {$page->title}");
-
                 continue;
             }
 
-            if (PageBuilder::isDisabled($slug)) {
+            if (PageBuilderHelper::isDisabled($slug)) {
                 continue;
             }
 
-            $templateClass = PageBuilder::sectionTemplate($slug);
+            $templateClass = PageBuilderHelper::sectionTemplate($slug);
             if ($templateClass === null) {
                 Log::warning("No template registered for section '{$slug}'");
-
                 continue;
             }
 

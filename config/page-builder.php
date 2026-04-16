@@ -31,6 +31,14 @@ return [
     |
     */
     'sections' => [
+        'news' => [
+            'schema' => \App\Filament\PageBuilder\Sections\NewsSectionSchema::class,
+            'template' => \App\View\PageBuilder\Sections\NewsSectionTemplate::class,
+        ],
+        'news-two' => [
+            'schema' => \App\Filament\PageBuilder\Sections\NewsTwoSectionSchema::class,
+            'template' => \App\View\PageBuilder\Sections\NewsTwoSectionTemplate::class,
+        ],
         // @sections-end [DO NOT TOUCH]
     ],
 

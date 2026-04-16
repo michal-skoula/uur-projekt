@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
-use App\Helpers\PageBuilder;
+use App\Helpers\PageBuilderHelper;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -21,7 +21,7 @@ class PageForm
                 Toggle::make('is_published')
                     ->columnSpanFull(),
                 Builder::make('content')
-                    ->blocks(PageBuilder::blocks())
+                    ->blocks(PageBuilderHelper::blocks())
                     ->collapsible()
                     ->blockNumbers(false)
                     ->columnSpanFull(),

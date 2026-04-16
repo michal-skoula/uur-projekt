@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:livewire.laravel.com)",
       "Bash(vendor/bin/pint --dirty --format agent)",
-      "Bash(composer analyze:*)"
+      "Bash(composer analyze:*)",
+      "mcp__laravel-boost__search-docs"
     ]
   },
   "enableAllProjectMcpServers": true,

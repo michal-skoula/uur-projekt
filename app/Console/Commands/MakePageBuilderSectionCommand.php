@@ -3,13 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Enums\PageBuilderSectionTemplateType as SectionTemplateType;
-use App\Helpers\PageBuilder;
+use App\Helpers\PageBuilderHelper;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 use function Laravel\Prompts\select;
 
@@ -17,12 +18,15 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
 {
     protected $signature =
         'make:cms-section '.
-        '{name : UpperCamelCase name of the section} '.
-        '{slug : Kebab-case slug of the section} '.
+        '{name : PascalCase name of the section (e.g. Hero, NewsFeature)} '.
         '{--t|type= : Type of frontend template rendering the section data} '.
         '{--T|test : Generate a test file alongside the Livewire component (livewire type only)}';
 
     protected $description = 'Scaffolds a new CMS section and registers it in the page-builder config file.';
+
+    private const string NAME_PATTERN = '/^[A-Z][A-Za-z0-9]*$/';
+
+    private const string CONFIG_LOCATOR = '// @sections-end [DO NOT TOUCH]';
 
     private string $schemasDirectory = 'app/Filament/PageBuilder/Sections';
 
@@ -45,8 +49,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
     protected function promptForMissingArgumentsUsing(): array
     {
         return [
-            'name' => ['What is the UpperCamelCase name of this section?', 'E.g. Hero, NewsFeature'],
-            'slug' => ['What is the kebab-case slug of this section?', 'E.g. hero, news-feature'],
+            'name' => ['What is the PascalCase name of this section?', 'E.g. Hero, NewsFeature'],
         ];
     }
 
@@ -54,52 +57,119 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
     {
         try {
             $args = $this->getValidatedArguments();
+        } catch (RuntimeException $e) {
+            $this->components->error($e->getMessage());
+            return self::FAILURE;
+        }
 
-            if (PageBuilder::isValidSection($args['slug'])) {
-                $this->components->error('Section "'.$args['slug'].'" already exists.');
+        if (PageBuilderHelper::isValidSection($args['slug'])) {
+            $this->components->error('Section "'.$args['slug'].'" already exists.');
+            return self::INVALID;
+        }
 
-                return 2;
-            }
+        $collisions = array_values(array_filter(
+            $this->plannedPaths($args['name'], $args['slug'], $args['type'], $args['test']),
+            callback: fn (string $path): bool => file_exists($path),
+        ));
 
-            $schemaClassString = $this->generateSchema($args['name'], $args['slug']);
+        if ($collisions !== []) {
+            $this->components->error(
+                "Cannot scaffold: the following files already exist:\n  - ".implode("\n  - ", $collisions)
+            );
+            return self::INVALID;
+        }
 
-            $templateClassString = match ($args['type']) {
-                SectionTemplateType::BLADE => $this->generateBladeTemplate($args['name'], $args['slug']),
-                SectionTemplateType::LIVEWIRE => $this->generateLiveWireTemplate($args['name'], $args['slug'], $args['test']),
+        $configPath = config_path('page-builder.php');
+        $configSnapshot = @file_get_contents($configPath); // note: `@` suppresses all stderr stuff
+        if ($configSnapshot === false) {
+            $this->components->error('Unable to read config file at '.$configPath);
+            return self::FAILURE;
+        }
+
+        /**
+         * Stores all created FQCNs passed to it via &reference, to be able to roll back later.
+         * basically a slightly cleaner way than returning and writing `created[] = ...` every time.
+         */
+        $created = [];
+
+        try {
+            $schemaFqcn = $this->generateSchema($args['name'], $args['slug'], $created);
+
+            $templateFqcn = match ($args['type']) {
+                SectionTemplateType::BLADE => $this->generateBladeTemplate($args['name'], $args['slug'], $created),
+                SectionTemplateType::LIVEWIRE => $this->generateLiveWireTemplate($args['name'], $args['slug'], $args['test'], $created),
                 SectionTemplateType::NONE => null,
             };
 
-            $this->addSectionToConfig($args['slug'], $schemaClassString, $templateClassString);
+            $this->addSectionToConfig($args['slug'], $schemaFqcn, $templateFqcn, $configPath, $configSnapshot);
 
             $this->components->success('🎉  New section scaffolded successfully!');
-        } catch (RuntimeException $e) {
-            $this->components->error($e->getMessage());
 
-            return 1;
+            return self::SUCCESS;
         }
+        catch (Throwable $e) {
+            $this->rollback($created, $configPath, $configSnapshot);
+            $this->components->error('Scaffolding failed and was rolled back: '.$e->getMessage());
 
-        return 0;
+            return self::FAILURE;
+        }
     }
 
     /**
-     * Generates scaffolding for the section backend (filament schema)
+     * Full list of paths the command intends to create, used for pre-flight collision check.
+     *
+     * @return list<string>
      */
-    private function generateSchema(string $name, string $slug): string
+    private function plannedPaths(string $name, string $slug, SectionTemplateType $type, bool $withTest): array
+    {
+        $paths = [
+            base_path("{$this->schemasDirectory}/{$name}SectionSchema.php"),
+        ];
+
+        if ($type === SectionTemplateType::BLADE || $type === SectionTemplateType::LIVEWIRE) {
+            $paths[] = base_path("{$this->templatesDirectory}/{$name}SectionTemplate.php");
+            $paths[] = base_path("{$this->viewsDirectory}/{$slug}.blade.php");
+        }
+
+        if ($type === SectionTemplateType::LIVEWIRE) {
+            $kebab = Str::kebab($name);
+            $paths[] = app_path("Livewire/{$name}.php");
+            $paths[] = resource_path("views/livewire/{$kebab}.blade.php");
+            // Also check SFC path to catch stale components regardless of Livewire config
+            $paths[] = resource_path("views/components/{$kebab}.blade.php");
+            if ($withTest) {
+                $paths[] = base_path("tests/Feature/Livewire/{$name}Test.php");
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Generates scaffolding for the section backend (filament schema).
+     *
+     * @param  list<string>  $created
+     */
+    private function generateSchema(string $name, string $slug, array &$created): string
     {
         $schemaPath = base_path("{$this->schemasDirectory}/{$name}SectionSchema.php");
 
         $this->writeFileFromStub($schemaPath, 'section-schema', [
             'name' => $name,
             'slug' => $slug,
-        ], 'section schema');
+        ], "schema {$name}SectionSchema");
+
+        $created[] = $schemaPath;
 
         return $this->getFullyQualifiedClassNameFromPath($schemaPath);
     }
 
     /**
      * Generates scaffolding for the `blade` frontend option.
+     *
+     * @param  list<string>  $created
      */
-    private function generateBladeTemplate(string $name, string $slug): string
+    private function generateBladeTemplate(string $name, string $slug, array &$created): string
     {
         $classPath = base_path($this->templatesDirectory.'/'.$name.'SectionTemplate.php');
         $viewPath = base_path($this->viewsDirectory.'/'.$slug.'.blade.php');
@@ -108,19 +178,23 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             'name' => $name,
             'slug' => $slug,
         ], "template {$name}SectionTemplate");
+        $created[] = $classPath;
 
         $this->writeFileFromStub($viewPath, 'section-view-blade', [
             'name' => $name,
             'slug' => $slug,
         ], "view {$slug}.blade.php");
+        $created[] = $viewPath;
 
         return $this->getFullyQualifiedClassNameFromPath($classPath);
     }
 
     /**
      * Generates scaffolding for the `livewire` frontend option.
+     *
+     * @param  list<string>  $created
      */
-    private function generateLiveWireTemplate(string $name, string $slug, bool $withTest): string
+    private function generateLiveWireTemplate(string $name, string $slug, bool $withTest, array &$created): string
     {
         $classPath = base_path($this->templatesDirectory.'/'.$name.'SectionTemplate.php');
         $viewPath = base_path($this->viewsDirectory.'/'.$slug.'.blade.php');
@@ -129,20 +203,34 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             'name' => $name,
             'slug' => $slug,
         ], "template {$name}SectionTemplate");
+        $created[] = $classPath;
 
         $this->writeFileFromStub($viewPath, 'section-view-livewire', [
             'slug' => $slug,
             'livewireTag' => Str::kebab($name),
         ], "view {$slug}.blade.php");
+        $created[] = $viewPath;
 
-        Artisan::call('make:livewire', [
-            'name' => $name,
-            '--test' => $withTest,
-            '--quiet' => true,
-        ]);
+        $params = ['name' => $name, '--class' => true, '--quiet' => true];
+        if ($withTest) {
+            $params['--test'] = true;
+        }
 
-        $label = $withTest ? "Livewire component & test file {$name}" : "Livewire component {$name}";
-        $this->components->success("👍  Generated {$label}");
+        $exitCode = Artisan::call('make:livewire', $params);
+        if ($exitCode !== 0) {
+            throw new RuntimeException(
+                "make:livewire failed (exit {$exitCode}):\n".trim(Artisan::output())
+            );
+        }
+
+        $created[] = app_path("Livewire/{$name}.php");
+        $created[] = resource_path('views/livewire/'.Str::kebab($name).'.blade.php');
+        if ($withTest) {
+            $created[] = base_path("tests/Feature/Livewire/{$name}Test.php");
+        }
+
+        $label = "component {$name}" . ($withTest ? " & {$name}Test" : '');
+        $this->components->success("Generated {$label}");
 
         return $this->getFullyQualifiedClassNameFromPath($classPath);
     }
@@ -159,15 +247,9 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
     {
         $this->files->ensureDirectoryExists(dirname($targetPath));
 
-        if (file_exists($targetPath)) {
-            $this->components->warn("{$label} already exists at {$targetPath}, skipping.");
-
-            return;
-        }
-
         $content = $this->hydrateStub($this->getStubsPath($stubSlug), $placeholders);
         $this->files->put($targetPath, $content);
-        $this->components->success("👍  Generated {$label}");
+        $this->components->success("Generated {$label}");
     }
 
     /**
@@ -190,8 +272,8 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
         $relative = Str::after($fullPath, $appPath);
 
         return app()->getNamespace().str_replace(
-            ['/', '.php'],
-            ['\\', ''],
+            ['/', '\\', '.php'],
+            ['\\', '\\', ''],
             $relative
         );
     }
@@ -217,14 +299,18 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
      * @param  array<string, string>  $data  `[placeholder_slug => value]` pairs
      * @return string The hydrated stub.
      *
-     * @throws RuntimeException Throws when no stub file is found at the location.
+     * @throws RuntimeException Throws when the stub file is unreadable or empty.
      */
     private function hydrateStub(string $stub_path, array $data): string
     {
-        $stubContent = file_get_contents($stub_path);
+        $stubContent = @file_get_contents($stub_path);
 
-        if ($stubContent === false || ! file_exists($stub_path)) {
-            throw new RuntimeException('No stub file found at: '.$stub_path);
+        if ($stubContent === false) {
+            throw new RuntimeException('Unable to read stub file at: '.$stub_path);
+        }
+
+        if ($stubContent === '') {
+            throw new RuntimeException('Stub file is empty: '.$stub_path);
         }
 
         foreach ($data as $placeholder => $value) {
@@ -241,27 +327,36 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
      */
     private function getValidatedArguments(): array
     {
-        $sectionName = $this->argument('name');
-        if (! $sectionName) {
-            throw new RuntimeException('Invalid or missing section name.');
+        $sectionName = (string) $this->argument('name');
+        if (preg_match(self::NAME_PATTERN, $sectionName) !== 1) {
+            throw new RuntimeException(
+                "Invalid section name: \"{$sectionName}\". Must be PascalCase (e.g. Hero, NewsFeature)."
+            );
         }
 
-        $sectionSlug = $this->argument('slug');
-        if (! $sectionSlug) {
-            throw new RuntimeException('Invalid or missing section slug.');
-        }
+        $sectionSlug = Str::kebab($sectionName);
 
-        $sectionType = $this->option('type') ?:
-            select('What should the Section\'s frontend use?', SectionTemplateType::getCommandOptions());
-
+        $sectionType = $this->option('type');
         if (! $sectionType) {
-            throw new RuntimeException('Invalid or missing section type.');
+            if (! $this->input->isInteractive()) {
+                throw new RuntimeException(
+                    '--type is required in non-interactive mode. Allowed: '.
+                    implode(', ', SectionTemplateType::values())
+                );
+            }
+
+            $sectionType = select(
+                'What should the Section\'s frontend use?',
+                SectionTemplateType::getCommandOptions(),
+            );
         }
 
         $type = SectionTemplateType::tryFrom($sectionType);
         if ($type === null) {
-            throw new RuntimeException("Unknown section type: $sectionType, allowed options: ".
-                implode(', ', SectionTemplateType::values()));
+            throw new RuntimeException(
+                "Unknown section type: \"{$sectionType}\". Allowed: ".
+                implode(', ', SectionTemplateType::values())
+            );
         }
 
         return [
@@ -272,40 +367,72 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
         ];
     }
 
-    private function addSectionToConfig(string $slug, string $schemaFqcn, ?string $templateFqcn = null): void
-    {
-        $locator = '// @sections-end [DO NOT TOUCH]';
-        $path = config_path('page-builder.php');
-        $config = file_get_contents($path);
+    /**
+     * Inserts the new section entry above the locator comment in the config file.
+     * Detects the locator's leading whitespace to produce correctly-indented output
+     * regardless of the config file's indent style.
+     */
+    private function addSectionToConfig(
+        string $slug,
+        string $schemaFqcn,
+        ?string $templateFqcn,
+        string $configPath,
+        string $configContents,
+    ): void {
+        $pattern = '/^([ \t]*)'.preg_quote(self::CONFIG_LOCATOR, '/').'$/m';
 
-        if (! $config) {
-            throw new RuntimeException('Unable to read config file.');
+        if (preg_match($pattern, $configContents, $match) !== 1) {
+            throw new RuntimeException('Unable to write config: no end-of-section locator found.');
         }
 
-        // Note: the indentation here is mangled intentionally.
-        // first line works properly, then it seems to go from the start of the line instead of
-        // same indentation as line above, meaning that its two tabs off. This solution offsets
-        // that issue, but is quite brittle. This is an acceptable tradeoff
-        $configMarkup = <<<CONFIG
-            '{$slug}' => [
-                        'schema' => {$this->toClassString($schemaFqcn)},
-                        'template' => {$this->toClassString($templateFqcn)},
-                    ],
-                    $locator
-            CONFIG;
+        $indent = $match[1];
+        $schemaClass = $this->toClassString($schemaFqcn);
+        $templateClass = $this->toClassString($templateFqcn);
+        $locator = self::CONFIG_LOCATOR;
 
-        if (! str_contains($config, $locator)) {
-            throw new RuntimeException('Unable write config: no end-of-section locator found.');
+        $block = <<<CONFIG
+        '{$slug}' => [
+            'schema' => {$schemaClass},
+            'template' => {$templateClass},
+        ],
+        {$locator}
+        CONFIG;
+
+        $indentedBlock = preg_replace('/^/m', $indent, $block);
+        if ($indentedBlock === null) {
+            throw new RuntimeException('Unable to apply indentation to config block.');
         }
 
-        $this->files->put($path, str_replace($locator, $configMarkup, $config));
+        $newContents = str_replace($indent.$locator, $indentedBlock, $configContents);
+
+        if ($this->files->put($configPath, $newContents) === false) {
+            throw new RuntimeException('Failed to write updated config file at '.$configPath);
+        }
     }
 
     /**
-     * Appends ::class to valid fqcn or returns back null.
+     * Appends ::class to a valid fqcn, or returns the literal `null`.
      */
-    private function toClassString(?string $fqcn): ?string
+    private function toClassString(?string $fqcn): string
     {
-        return ! $fqcn ? null : $fqcn.'::class';
+        return $fqcn === null ? 'null' : '\\'.ltrim($fqcn, '\\').'::class';
+    }
+
+    /**
+     * Deletes any files created during this run and restores the config file.
+     *
+     * @param  list<string>  $created
+     */
+    private function rollback(array $created, string $configPath, string $configSnapshot): void
+    {
+        foreach ($created as $path) {
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        if (@file_get_contents($configPath) !== $configSnapshot) {
+            @file_put_contents($configPath, $configSnapshot);
+        }
     }
 }

@@ -409,6 +409,8 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
         if ($this->files->put($configPath, $newContents) === false) {
             throw new RuntimeException('Failed to write updated config file at '.$configPath);
         }
+
+        $this->components->success("Registered section in config file");
     }
 
     /**

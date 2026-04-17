@@ -7,7 +7,10 @@ use Illuminate\Contracts\View\View;
 
 final class {{name}}SectionTemplate implements SectionTemplate
 {
-    /** @var array<string, mixed> */
+    /**
+     * Formatted data passed to the Section's frontend.
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     public function prepareData(array $data): static

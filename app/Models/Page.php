@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property ?int $parent_id
  * @property string $title
  * @property ?string $slug
- * @property list<array{type: string, data: mixed}> $content
+ * @property list<array{type: string, data: array<string, mixed>}> $content
  * @property bool $is_published
  */
-// fixme: install laravel-ide-helper and give AI access to it, and add it into the coding pipeline
+// todo: install laravel-ide-helper and give AI access to it, and add it into the coding pipeline
 class Page extends Model
 {
     protected $fillable = [

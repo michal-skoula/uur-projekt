@@ -11,5 +11,6 @@ metadata:
 This skill is a dispatcher. Read the module doc that matches the task before editing anything:
 
 - **Page Builder** (sections, schemas, templates, registry) → `modules/page-builder.md`
+- **Content Management** (populating pages with section data) → `modules/content-management.md`
 
 If the task spans multiple modules, read each relevant file. Do not touch `app/Contracts/` or `app/Concerns/` — those are the CMS's internal surface and agents should not modify them.

@@ -10,13 +10,21 @@ return new class extends Migration
     {
         Schema::create('pages', function (Blueprint $table) {
             $table->id();
-
             $table->string('title');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('slug')->nullable()->unique();
             $table->json('content')->default('[]');
-            $table->boolean('is_published')->default(false);
-
+            $table->softDeletes();
             $table->timestamps();
+
+
+            $table->foreign('parent_id', name: 'fk_pages_parent_id')
+                ->references('id')
+                ->on('pages')
+                ->nullOnDelete();
+
+
+            $table->index(['parent_id'], name: 'idx_pages_parent');
         });
     }
 

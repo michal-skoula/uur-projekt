@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -15,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
 // todo: install laravel-ide-helper and give AI access to it, and add it into the coding pipeline
 class Page extends Model
 {
+    use SoftDeletes, HasFactory;
+
     protected $fillable = [
         'title',
         'slug',
@@ -33,8 +39,24 @@ class Page extends Model
         ];
     }
 
-    public function getAbsoluteUrl(): string
+    public function parent(): BelongsTo
     {
-        return '/'.(string) $this->slug;
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
+
+    /**
+     * Nests the current Page as a child of a parent Page.
+     * @param Page|null $parent Parent model or null if top-level page.
+     * @return void
+     */
+    public function nestUnder(self|null $parent): void
+    {
+        $this->parent_id = $parent->id;
     }
 }

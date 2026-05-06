@@ -1,10 +1,11 @@
 <?php
 
 use App\Http\Controllers\PageBuilderController;
+use App\Services\SitemapService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/testing', function () {
-    \App\Services\SitemapTreeBuilderService::handle();
+    dd(app(SitemapService::class)->fullSitemap());
 });
 
 Route::get('/{path?}', PageBuilderController::class)

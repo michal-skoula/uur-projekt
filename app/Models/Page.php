@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\PageObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $is_published
  */
 // todo: install laravel-ide-helper and give AI access to it, and add it into the coding pipeline
+
+#[ObservedBy(PageObserver::class)]
 class Page extends Model
 {
     use SoftDeletes, HasFactory;
@@ -47,6 +51,11 @@ class Page extends Model
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    public function canView(?User $user): bool
+    {
+        return true; // todo: implement access control for admins
     }
 
 

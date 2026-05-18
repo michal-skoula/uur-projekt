@@ -4,6 +4,13 @@ namespace App\Http\Controllers;
 
 class {{name}}Controller extends Controller
 {
-{{indexMethod}}
-{{itemMethod}}
+    public function index(): mixed
+    {
+        //
+    }
+
+    public function show(mixed $item): mixed
+    {
+        //
+    }
 }

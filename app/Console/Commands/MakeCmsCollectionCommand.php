@@ -19,20 +19,14 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
         'make:cms-collection '.
         '{name : PascalCase name of the collection (e.g. Contacts, Services)} '.
         '{model : Fully-qualified model class (e.g. App\Models\Contact)} '.
-        '{--index : Implement HasIndexPage (generates controller index method)} '.
-        '{--items : Implement HasItemPages (generates controller item method)} '.
+        '{--controller : Generate a controller with index() and show() methods} '.
         '{--filament : Scaffold a Filament resource via make:filament-resource}';
 
-    protected $description = 'Scaffolds a new ContentCollection and registers it in the content-collections config file.';
+    protected $description = 'Registers a content collection and optionally scaffolds a controller and Filament resource.';
 
     private const string NAME_PATTERN = '/^[A-Z][A-Za-z0-9]*$/';
 
     private const string CONFIG_LOCATOR = '// @collections-end [DO NOT TOUCH]';
-
-    // todo: make this configurable in the config file
-    //       - handle missing config
-    //       - update to be resolved in the constructor instead of a const
-    private const string COLLECTIONS_DIRECTORY = 'app/ContentCollections';
 
     protected Filesystem $files;
 
@@ -50,7 +44,7 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
     {
         return [
             'name' => ['What is the PascalCase name of this collection?', 'E.g. Contacts, Services'],
-            'model' => ['What is the Model represented by collection?', 'E.g. App\\Models\\Contacts'],
+            'model' => ['What is the fully-qualified model class?', 'E.g. App\Models\Contact'],
         ];
     }
 
@@ -72,17 +66,8 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
             return self::INVALID;
         }
 
-        $needsController = $args['index'] || $args['items'];
-
-        $collisions = array_values(array_filter(
-            $this->plannedPaths($args['name'], $needsController),
-            fn (string $path): bool => file_exists($path),
-        ));
-
-        if ($collisions !== []) {
-            $this->components->error(
-                "Cannot scaffold: the following files already exist:\n  - ".implode("\n  - ", $collisions)
-            );
+        if ($args['controller'] && file_exists(app_path("Http/Controllers/{$args['name']}Controller.php"))) {
+            $this->components->error("Cannot scaffold: app/Http/Controllers/{$args['name']}Controller.php already exists.");
 
             return self::INVALID;
         }
@@ -98,15 +83,13 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
         $created = [];
 
         try {
-            $this->generateCollection($args['name'], $slug, $args['model'], $args['index'], $args['items'], $created);
-
-            if ($needsController) {
-                $this->generateController($args['name'], $args['index'], $args['items'], $created);
+            if ($args['controller']) {
+                $this->generateController($args['name'], $created);
             }
 
-            $this->addCollectionToConfig($slug, $args['name'], $configPath, $configSnapshot);
+            $this->addToConfig($slug, $args['model'], $configPath, $configSnapshot);
 
-            $this->components->success('🎉  New collection scaffolded successfully!');
+            $this->components->success('🎉  Collection registered successfully!');
 
             $withFilament = $args['filament'] || (
                 $this->input->isInteractive() &&
@@ -127,75 +110,17 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * @return list<string>
-     */
-    private function plannedPaths(string $name, bool $needsController): array
-    {
-        $paths = [
-            base_path(self::COLLECTIONS_DIRECTORY."/{$name}Collection.php"),
-        ];
-
-        if ($needsController) {
-            $paths[] = app_path("Http/Controllers/{$name}Controller.php");
-        }
-
-        return $paths;
-    }
-
-    /**
      * @param  list<string>  $created
      */
-    private function generateCollection(
-        string $name,
-        string $slug,
-        string $modelFqcn,
-        bool $withIndex,
-        bool $withItems,
-        array &$created,
-    ): void {
-        $path = base_path(self::COLLECTIONS_DIRECTORY."/{$name}Collection.php");
-        $modelClass = class_basename($modelFqcn);
-
-        $implementsList = array_filter([
-            $withIndex ? 'HasIndexPage' : null,
-            $withItems ? 'HasItemPages' : null,
-        ]);
-
-        $implements = $implementsList !== [] ? ' implements '.implode(', ', $implementsList) : '';
-
-        $controllerMethods = ($withIndex || $withItems) ? $this->buildControllerMethodsBlock($name) : '';
-        $indexMethods = $withIndex ? $this->buildIndexMethodsBlock($slug) : '';
-        $itemMethods = $withItems ? $this->buildItemMethodsBlock($slug) : '';
-
-        $this->writeFileFromStub($path, 'content-collection', [
-            'name' => $name,
-            'modelFqcn' => $modelFqcn,
-            'modelClass' => $modelClass,
-            'implements' => $implements,
-            'controllerMethods' => $controllerMethods,
-            'indexMethods' => $indexMethods,
-            'itemMethods' => $itemMethods,
-        ], "collection {$name}Collection");
-
-        $created[] = $path;
-    }
-
-    /**
-     * @param  list<string>  $created
-     */
-    private function generateController(string $name, bool $withIndex, bool $withItems, array &$created): void
+    private function generateController(string $name, array &$created): void
     {
         $path = app_path("Http/Controllers/{$name}Controller.php");
 
-        $indexMethod = $withIndex ? $this->buildControllerIndexMethod() : '';
-        $itemMethod = $withItems ? $this->buildControllerItemMethod() : '';
+        $this->files->ensureDirectoryExists(dirname($path));
+        $content = $this->hydrateStub($this->getStubPath('content-collection-controller'), ['name' => $name]);
+        $this->files->put($path, $content);
 
-        $this->writeFileFromStub($path, 'content-collection-controller', [
-            'name' => $name,
-            'indexMethod' => $indexMethod,
-            'itemMethod' => $itemMethod,
-        ], "controller {$name}Controller");
-
+        $this->components->success("Generated controller {$name}Controller");
         $created[] = $path;
     }
 
@@ -218,47 +143,26 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
         $this->components->success("Scaffolded Filament resource {$name}Resource");
     }
 
-    private function buildControllerMethodsBlock(string $name): string
+    private function addToConfig(string $slug, string $modelFqcn, string $configPath, string $configContents): void
     {
-        return $this->hydrateStub($this->getStubPath('collection-controller-methods'), [
-            'name' => $name,
-        ]);
-    }
+        $pattern = '/^([ \t]*)'.preg_quote(self::CONFIG_LOCATOR, '/').'$/m';
 
-    private function buildIndexMethodsBlock(string $slug): string
-    {
-        return $this->hydrateStub($this->getStubPath('collection-index-methods'), [
-            'slug' => $slug,
-        ]);
-    }
+        if (preg_match($pattern, $configContents, $match) !== 1) {
+            throw new RuntimeException('Unable to write config: no end-of-collections locator found.');
+        }
 
-    private function buildItemMethodsBlock(string $slug): string
-    {
-        return $this->hydrateStub($this->getStubPath('collection-item-methods'), [
-            'itemSlug' => Str::singular($slug),
-        ]);
-    }
+        $indent = $match[1];
+        $locator = self::CONFIG_LOCATOR;
 
-    private function buildControllerIndexMethod(): string
-    {
-        return $this->hydrateStub($this->getStubPath('collection-controller-index-method'), []);
-    }
+        $block = "'{$slug}' => \\{$modelFqcn}::class,\n{$indent}{$locator}";
 
-    private function buildControllerItemMethod(): string
-    {
-        return $this->hydrateStub($this->getStubPath('collection-controller-item-method'), []);
-    }
+        $newContents = str_replace($indent.$locator, $indent.$block, $configContents);
 
-    /**
-     * @param  array<string, string>  $placeholders
-     */
-    private function writeFileFromStub(string $targetPath, string $stubSlug, array $placeholders, string $label): void
-    {
-        $this->files->ensureDirectoryExists(dirname($targetPath));
+        if ($this->files->put($configPath, $newContents) === false) {
+            throw new RuntimeException('Failed to write updated config file at '.$configPath);
+        }
 
-        $content = $this->hydrateStub($this->getStubPath($stubSlug), $placeholders);
-        $this->files->put($targetPath, $content);
-        $this->components->success("Generated {$label}");
+        $this->components->success('Registered collection in config');
     }
 
     private function getStubPath(string $stubSlug): string
@@ -294,41 +198,6 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
         return $content;
     }
 
-    private function addCollectionToConfig(
-        string $slug,
-        string $name,
-        string $configPath,
-        string $configContents,
-    ): void {
-        $pattern = '/^([ \t]*)'.preg_quote(self::CONFIG_LOCATOR, '/').'$/m';
-
-        if (preg_match($pattern, $configContents, $match) !== 1) {
-            throw new RuntimeException('Unable to write config: no end-of-collections locator found.');
-        }
-
-        $indent = $match[1];
-        $fqcn = '\\App\\ContentCollections\\'.$name.'Collection';
-        $locator = self::CONFIG_LOCATOR;
-
-        $block = <<<CONFIG
-        '{$slug}' => {$fqcn}::class,
-        {$locator}
-        CONFIG;
-
-        $indentedBlock = preg_replace('/^/m', $indent, $block);
-        if ($indentedBlock === null) {
-            throw new RuntimeException('Unable to apply indentation to config block.');
-        }
-
-        $newContents = str_replace($indent.$locator, $indentedBlock, $configContents);
-
-        if ($this->files->put($configPath, $newContents) === false) {
-            throw new RuntimeException('Failed to write updated config file at '.$configPath);
-        }
-
-        $this->components->success('Registered collection in config file');
-    }
-
     /**
      * @param  list<string>  $created
      */
@@ -351,7 +220,7 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * @return array{name: string, model: string, index: bool, items: bool, filament: bool}
+     * @return array{name: string, model: string, controller: bool, filament: bool}
      *
      * @throws RuntimeException
      */
@@ -386,8 +255,7 @@ class MakeCmsCollectionCommand extends Command implements PromptsForMissingInput
         return [
             'name' => $name,
             'model' => $model,
-            'index' => (bool) $this->option('index'),
-            'items' => (bool) $this->option('items'),
+            'controller' => (bool) $this->option('controller'),
             'filament' => (bool) $this->option('filament'),
         ];
     }

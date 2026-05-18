@@ -13,6 +13,8 @@ class PageBuilderController extends Controller
 {
     public function __invoke(?string $path = null): View
     {
+        dd($path);
+        echo 'hi';
         $page = ResolvePageFromPath::handle($path);
 
         if (! $page) {

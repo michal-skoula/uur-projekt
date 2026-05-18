@@ -8,5 +8,9 @@ Route::get('/testing', function () {
     dd(app(SitemapService::class)->fullSitemap());
 });
 
-Route::get('/{path?}', PageBuilderController::class)
-    ->name('page-builder.show');
+
+Route::get('/{path?}', fn ($path) => dd($path))
+    ->where('path', '.*'); // RegExp for getting slashes
+
+//Route::get('/{path?}', PageBuilderController::class)
+//    ->name('page-builder.show');

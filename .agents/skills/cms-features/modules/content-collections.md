@@ -42,12 +42,16 @@ The command registers the collection in config and optionally generates a contro
 
 ## Routes
 
-Write these manually in `routes/web.php`:
+Write these manually in `routes/web.php`. Wrap them in the `collection.accessible` middleware, passing the collection slug — this automatically returns 404 if the collection is disabled in config:
 
 ```php
-Route::get('/contacts', [ContactsController::class, 'index']);
-Route::get('/contact/{contact:slug}', [ContactsController::class, 'show']);
+Route::middleware('collection.accessible:contacts')->group(function () {
+    Route::get('/contacts', [ContactsController::class, 'index']);
+    Route::get('/contact/{contact:slug}', [ContactsController::class, 'show']);
+});
 ```
+
+For index-only or item-only collections, just include the relevant route.
 
 ---
 
@@ -94,8 +98,8 @@ protected static string $model = Contact::class;
 'deprecated' => [],
 ```
 
-- **`disabled`** — blocks access immediately. Use for broken or dangerous collections.
-- **`deprecated`** — flags for removal, preserves existing behaviour.
+- **`disabled`** — `collection.accessible` returns 404. Use when a collection needs to be taken offline immediately.
+- **`deprecated`** — informational only, does not gate routing. Flags the collection for eventual removal.
 
 Always leave a comment explaining why when disabling or deprecating. Read the registry with `php artisan config:show content-collections`.
 

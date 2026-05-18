@@ -12,5 +12,6 @@ This skill is a dispatcher. Read the module doc that matches the task before edi
 
 - **Page Builder** (sections, schemas, templates, registry) → `modules/page-builder.md`
 - **Content Management** (populating pages with section data) → `modules/content-management.md`
+- **Content Collections** (model-backed content types, scaffolding, controllers, Filament resources) → `modules/content-collections.md`
 
 If the task spans multiple modules, read each relevant file. Do not touch `app/Contracts/` or `app/Concerns/` — those are the CMS's internal surface and agents should not modify them.

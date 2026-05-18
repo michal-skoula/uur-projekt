@@ -1,0 +1,10 @@
+
+    public static function getItemsSlug(): string
+    {
+        return '{{itemSlug}}';
+    }
+
+    public static function getControllerItemResolverMethodName(): string
+    {
+        return 'show';
+    }

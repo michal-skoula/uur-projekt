@@ -1,0 +1,10 @@
+
+    public static function getIndexSlug(): string
+    {
+        return '{{slug}}';
+    }
+
+    public static function getControllerIndexResolverMethodName(): string
+    {
+        return 'index';
+    }

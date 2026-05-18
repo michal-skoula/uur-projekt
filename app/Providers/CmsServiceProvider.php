@@ -20,6 +20,6 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->singleton(SitemapService::class, fn() => new SitemapService());
+        $this->app->singleton(SitemapService::class, fn () => new SitemapService);
     }
 }

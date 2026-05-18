@@ -7,10 +7,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
+        "ext-pdo": "*",
         "filament/filament": "^5.0",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
-        "ext-pdo": "*"
+        "spatie/laravel-settings": "^3.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

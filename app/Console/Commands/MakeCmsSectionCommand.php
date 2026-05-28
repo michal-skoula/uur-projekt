@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\PageBuilderSectionTemplateType as SectionTemplateType;
-use App\Helpers\PageBuilderHelper;
+use App\Helpers\CmsSectionsHelper;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Filesystem\Filesystem;
@@ -63,7 +63,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             return self::FAILURE;
         }
 
-        if (PageBuilderHelper::isValidSection($args['slug'])) {
+        if (CmsSectionsHelper::isValidSection($args['slug'])) {
             $this->components->error('Section "'.$args['slug'].'" already exists.');
 
             return self::INVALID;
@@ -410,7 +410,7 @@ class MakePageBuilderSectionCommand extends Command implements PromptsForMissing
             throw new RuntimeException('Failed to write updated config file at '.$configPath);
         }
 
-        $this->components->success("Registered section in config file");
+        $this->components->success('Registered section in config file');
     }
 
     /**

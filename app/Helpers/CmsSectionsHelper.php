@@ -13,7 +13,7 @@ use Illuminate\Support\HtmlString;
 use Livewire\Component as LivewireComponent;
 use Livewire\Livewire;
 
-final class PageBuilderHelper
+final class CmsSectionsHelper
 {
     /**
      * @return string[]

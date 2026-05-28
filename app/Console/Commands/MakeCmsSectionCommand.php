@@ -14,7 +14,7 @@ use Throwable;
 
 use function Laravel\Prompts\select;
 
-class MakePageBuilderSectionCommand extends Command implements PromptsForMissingInput
+class MakeCmsSectionCommand extends Command implements PromptsForMissingInput
 {
     protected $signature =
         'make:cms-section '.

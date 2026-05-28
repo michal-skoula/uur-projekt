@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\ResolvePageFromPath;
-use App\Helpers\PageBuilderHelper;
+use App\Helpers\CmsSectionsHelper;
 use App\Models\Page;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +47,7 @@ class PageBuilderController extends Controller
             $slug = $section['type'];
             $data = $section['data'];
 
-            if (! PageBuilderHelper::isValidSection($slug)) {
+            if (! CmsSectionsHelper::isValidSection($slug)) {
                 Log::warning("Invalid section {$slug} found on page {$page->title}");
 
                 continue;
@@ -59,12 +59,12 @@ class PageBuilderController extends Controller
                 continue;
             }
 
-            if (PageBuilderHelper::isDisabled($slug)) {
+            if (CmsSectionsHelper::isDisabled($slug)) {
                 continue;
             }
 
             // todo: handle exceptions on render
-            $rendered[] = PageBuilderHelper::renderSection($slug, $data);
+            $rendered[] = CmsSectionsHelper::renderSection($slug, $data);
         }
 
         return $rendered;

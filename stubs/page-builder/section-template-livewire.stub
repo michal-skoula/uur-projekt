@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Contracts\SectionTemplate;
+use Illuminate\Contracts\View\View;
+use Livewire\Component;
+
+class {{name}} extends Component implements SectionTemplate
+{
+    /**
+     * Formatted data passed to the Section's frontend.
+     * @var array<string, mixed>
+     */
+    public array $data = [];
+
+    public function mount(array $data): void
+    {
+        $this->prepareData($data);
+    }
+
+    public function prepareData(array $data): static
+    {
+        // Transform raw CMS data into component properties here
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function render(): View
+    {
+        return view('livewire.{{livewireTag}}');
+    }
+}

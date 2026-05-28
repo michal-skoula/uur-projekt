@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Filament\PageBuilder\Sections;
+
+use App\Concerns\BuildsSectionSchema;
+use App\Contracts\SectionSchema;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Schemas\Components\Component;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\Support\Htmlable;
+
+final class {{name}}SectionSchema implements SectionSchema
+{
+    use BuildsSectionSchema;
+
+    /**
+     * Canonical name for this section.
+     * @return string
+     */
+    public static function getSlug(): string
+    {
+        return '{{slug}}';
+    }
+
+    /**
+     * Label displayed in the Builder's section picker.
+     * @return string
+     */
+    public static function getLabel(): string
+    {
+        return '{{name}}';
+    }
+
+    /**
+     * Icon displayed in the Builder's section picker.
+     * @return Heroicon
+     */
+    public static function getIcon(): Heroicon
+    {
+        return Heroicon::FaceSmile;
+    }
+
+    /**
+     * Filament form schema for this section.
+     * @return array<Component | Action | ActionGroup | string | Htmlable>
+     */
+    public static function getSchema(): array
+    {
+        return [
+            //
+        ];
+    }
+}

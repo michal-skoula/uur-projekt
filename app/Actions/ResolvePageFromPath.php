@@ -12,6 +12,6 @@ class ResolvePageFromPath
     {
         $slug = $path === '' ? null : $path;
 
-        return Page::query()->where('slug', $slug)->first();
+        return Page::where('slug', $slug)->first();
     }
 }

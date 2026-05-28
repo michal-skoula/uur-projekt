@@ -3,67 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Actions\ResolvePageFromPath;
-use App\Contracts\SectionTemplate;
-use App\Helpers\PageBuilder;
+use App\Helpers\CmsSectionsHelper;
 use App\Models\Page;
-use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\HtmlString;
 
 class PageBuilderController extends Controller
 {
     public function __invoke(?string $path = null): View
     {
+        dd($path);
+        echo 'hi';
         $page = ResolvePageFromPath::handle($path);
 
-        abort_if($page === null || ! $page->is_published, 404);
+        if (! $page) {
+            abort(404);
+        }
 
-        return view('page-builder.page', [
+        /** @var Page $page */
+        if (! $page->is_published) {
+            abort(404); // todo: add override for admins to still be able to access
+        }
+
+        return view('page-builder.page-builder', [
             'page' => $page,
             'sections' => $this->renderSections($page),
         ]);
     }
 
     /**
-     * @return array<View|Closure|string>
+     * @return array<View|HtmlString>
      */
     private function renderSections(Page $page): array
     {
         $rendered = [];
 
-        if(! $page->content) {
-            return $rendered;
+        if (! $page->content) {
+            return [];
         }
 
-        foreach ($page->content as [$slug => $section]) {
-            if(! PageBuilder::isValidSection($slug)) {
-                Log::warning("Invalid section {$slug} found on page {$page->title}");
-            }
-
-
-            if (! is_array($section) || ! isset($section['type']) || ! is_string($section['type'])) {
-                Log::warning('Malformed section in page '.$page->id, ['section' => $section]);
-
-                continue;
-            }
-
+        foreach ($page->content as $section) {
             $slug = $section['type'];
-            $data = is_array($section['data'] ?? null) ? $section['data'] : [];
+            $data = $section['data'];
 
-            if (PageBuilder::isDisabled($slug)) {
-                continue;
-            }
-
-            $templateClass = PageBuilder::sectionTemplate($slug);
-            if ($templateClass === null) {
-                Log::warning("No template registered for section '{$slug}'");
+            if (! CmsSectionsHelper::isValidSection($slug)) {
+                Log::warning("Invalid section {$slug} found on page {$page->title}");
 
                 continue;
             }
 
-            /** @var SectionTemplate $template */
-            $template = app($templateClass);
-            $rendered[] = $template->render($data);
+            if (! is_array($data)) {
+                Log::warning("Malformed data for section {$slug} found on page {$page->title}");
+
+                continue;
+            }
+
+            if (CmsSectionsHelper::isDisabled($slug)) {
+                continue;
+            }
+
+            // todo: handle exceptions on render
+            $rendered[] = CmsSectionsHelper::renderSection($slug, $data);
         }
 
         return $rendered;

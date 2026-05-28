@@ -10,5 +10,7 @@ interface SectionTemplate
     /**
      * @param  array<string, mixed>  $data
      */
-    public function render(array $data): View|Closure|string;
+    public function prepareData(array $data): static;
+
+    public function render(): View|Closure|string;
 }

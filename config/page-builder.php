@@ -1,10 +1,5 @@
 <?php
 
-use App\Filament\PageBuilder\Sections\HeroSectionSchema;
-use App\Filament\PageBuilder\Sections\TextSectionSchema;
-use App\View\PageBuilder\Sections\HeroSectionTemplate;
-use App\View\PageBuilder\Sections\TextSectionTemplate;
-
 return [
     /*
     |--------------------------------------------------------------------------
@@ -27,14 +22,7 @@ return [
     |
     */
     'sections' => [
-        'hero' => [
-            'schema' => HeroSectionSchema::class,
-            'template' => HeroSectionTemplate::class,
-        ],
-        'text' => [
-            'schema' => TextSectionSchema::class,
-            'template' => TextSectionTemplate::class,
-        ],
+        // @sections-end [DO NOT TOUCH]
     ],
 
     /*
@@ -45,6 +33,8 @@ return [
     | Slugs listed here are hidden from the admin add-picker AND skipped during
     | frontend render. Use when a section has a breaking bug or exploit and
     | you need to take it offline without touching stored page content.
+    |
+    | Always leave a comment explaining why a section is disabled.
     |
     */
     'disabled' => [
@@ -59,6 +49,8 @@ return [
     | Slugs listed here are hidden from the admin add-picker but still render
     | on the frontend. Use when a section has been superseded and shouldn't be
     | added to new pages, while existing pages using it continue to work.
+    |
+    | Always leave a comment explaining the reason for deprecation.
     |
     */
     'deprecated' => [

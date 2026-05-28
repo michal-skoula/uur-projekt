@@ -1,0 +1,3 @@
+<section id="{{slug}}">
+    {{-- {{name}} blade section markup --}}
+</section>

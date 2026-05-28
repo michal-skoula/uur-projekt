@@ -1,0 +1,3 @@
+<section id="{{slug}}">
+    {{-- {{name}} livewire section markup --}}
+</section>

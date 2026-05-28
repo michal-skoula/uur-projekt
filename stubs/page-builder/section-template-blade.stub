@@ -1,0 +1,28 @@
+<?php
+
+namespace App\View\PageBuilder\Sections;
+
+use App\Contracts\SectionTemplate;
+use Illuminate\Contracts\View\View;
+
+final class {{name}}SectionTemplate implements SectionTemplate
+{
+    /**
+     * Formatted data passed to the Section's frontend.
+     * @var array<string, mixed>
+     */
+    private array $data = [];
+
+    public function prepareData(array $data): static
+    {
+        // Transform raw CMS data into component properties here
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function render(): View
+    {
+        return view('page-builder.sections.{{slug}}', $this->data);
+    }
+}

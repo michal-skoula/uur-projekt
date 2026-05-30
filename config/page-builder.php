@@ -1,8 +1,10 @@
 <?php
 
 use App\Filament\PageBuilder\Sections\AboutSectionSchema;
+use App\Filament\PageBuilder\Sections\GallerySectionSchema;
 use App\Filament\PageBuilder\Sections\HeroSectionSchema;
 use App\View\PageBuilder\Sections\AboutSectionTemplate;
+use App\View\PageBuilder\Sections\GallerySectionTemplate;
 use App\View\PageBuilder\Sections\HeroSectionTemplate;
 
 return [
@@ -34,6 +36,10 @@ return [
         'about' => [
             'schema' => AboutSectionSchema::class,
             'template' => AboutSectionTemplate::class,
+        ],
+        'gallery' => [
+            'schema' => GallerySectionSchema::class,
+            'template' => GallerySectionTemplate::class,
         ],
         // @sections-end [DO NOT TOUCH]
     ],

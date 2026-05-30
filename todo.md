@@ -20,3 +20,8 @@
   - [ ] **Unit:** Do the helpers and other unit-testable pieces work as expected
   - [ ] **Integration:** Whether the Artisan commands generate the right output as well as testing filament, livewire and the other stuff, all possible with filament testing facades and helper methods.
   - [ ] **End-to-end:** Avoid when possible, most stuff should be doable with filament, livewire test methods.
+
+
+
+## Issues
+- AI Took it too literally: ContentSection `section` is obv not a real user facing section - explain how that should wokr

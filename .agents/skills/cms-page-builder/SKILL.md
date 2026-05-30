@@ -30,11 +30,11 @@ php artisan make:cms-section SectionName --type=blade|livewire|none --no-interac
 | `--type`        | `blade` (default), `livewire`, or `none`       |
 | `--test`        | Generate a Pest test file (livewire type only) |
 
-| Type | Files created |
-|------|--------------|
-| `blade` | Schema, Template class, Blade view |
+| Type       | Files created                                   |
+|------------|-------------------------------------------------|
+| `blade`    | Schema, Template class, Blade view              |
 | `livewire` | Schema, Livewire component, Livewire Blade view |
-| `none` | Schema only (no frontend — API/admin-only) |
+| `none`     | Schema only (no frontend — API/admin-only)      |
 
 The command also registers the section in `config/page-builder.php` automatically.
 

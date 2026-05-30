@@ -11,8 +11,12 @@ use Illuminate\Support\HtmlString;
 
 class CmsPageController extends Controller
 {
-    public function __invoke(?User $user, ?string $path)
+    // todo: fix '/' root file not working
+    public function __invoke(?string $path)
     {
+
+        $user = auth()->user();
+
         $slugs = explode('/', $path);
         $pages = [];
 
@@ -28,7 +32,7 @@ class CmsPageController extends Controller
 
         $page = last($pages);
 
-        if (! $page->canView($user)) {
+        if (! $user || ! $page->canView($user)) {
             abort(403);
         }
 

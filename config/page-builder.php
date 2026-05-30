@@ -1,5 +1,8 @@
 <?php
 
+use App\Filament\PageBuilder\Sections\HeroSectionSchema;
+use App\View\PageBuilder\Sections\HeroSectionTemplate;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -22,6 +25,10 @@ return [
     |
     */
     'sections' => [
+        'hero' => [
+            'schema' => HeroSectionSchema::class,
+            'template' => HeroSectionTemplate::class,
+        ],
         // @sections-end [DO NOT TOUCH]
     ],
 

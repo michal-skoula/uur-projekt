@@ -4,10 +4,12 @@ use App\Filament\PageBuilder\Sections\AboutSectionSchema;
 use App\Filament\PageBuilder\Sections\DanceSectionSchema;
 use App\Filament\PageBuilder\Sections\GallerySectionSchema;
 use App\Filament\PageBuilder\Sections\HeroSectionSchema;
+use App\Filament\PageBuilder\Sections\MapSectionSchema;
 use App\View\PageBuilder\Sections\AboutSectionTemplate;
 use App\View\PageBuilder\Sections\DanceSectionTemplate;
 use App\View\PageBuilder\Sections\GallerySectionTemplate;
 use App\View\PageBuilder\Sections\HeroSectionTemplate;
+use App\View\PageBuilder\Sections\MapSectionTemplate;
 
 return [
     /*
@@ -46,6 +48,10 @@ return [
         'dance' => [
             'schema' => DanceSectionSchema::class,
             'template' => DanceSectionTemplate::class,
+        ],
+        'map' => [
+            'schema' => MapSectionSchema::class,
+            'template' => MapSectionTemplate::class,
         ],
         // @sections-end [DO NOT TOUCH]
     ],

@@ -320,7 +320,7 @@ livewire(ListUsers::class)
 - Larastan is a PHPStan extension that adds support for Laravel.
 - Never ignore Larastan errors or warnings without approval.
 - Use Larastan to verify code correctness and catch potential issues before finalizing changes.
-- You can run Larastan with `composer analyze` or by calling `./vendor/bin/larastan` directly to check for issues.
+- Always analyse specific files rather than the whole project. `composer analyze` accepts paths after `--`, making it an alias for phpstan on any file or directory: `composer analyze -- app/Filament/Components/Link.php`. Do NOT run `composer analyze` without a path argument — it analyses the entire project and buries new errors among pre-existing ones.
 - Address all Larastan issues before finalizing changes to ensure code quality and adherence to Laravel best practices.
 - When encountering a Larastan issue and the solution is a hacky workaround, take a step back and analyze whether your approach is correct. Only after you rule out all other more elegant options may you use the workaround.
 

@@ -4,9 +4,9 @@ namespace App\Filament\PageBuilder\Sections;
 
 use App\Concerns\BuildsSectionSchema;
 use App\Contracts\SectionSchema;
+use App\Filament\Components\ButtonInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 
@@ -69,27 +69,8 @@ final class HeroSectionSchema implements SectionSchema
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
-                    Grid::make(2)
-                        ->columnSpanFull()
-                        ->schema([
-                            TextInput::make('button_primary.text')
-                                ->label(__('section-hero.button_primary_text'))
-                                ->required(),
-
-                            TextInput::make('button_primary.url')
-                                ->label(__('section-hero.button_primary_url'))
-                                ->url()
-                                ->required(),
-
-                            TextInput::make('button_secondary.text')
-                                ->label(__('section-hero.button_secondary_text'))
-                                ->required(),
-
-                            TextInput::make('button_secondary.url')
-                                ->label(__('section-hero.button_secondary_url'))
-                                ->url()
-                                ->required(),
-                        ]),
+                    ButtonInput::make('button_primary', __('section-hero.button_primary')),
+                    ButtonInput::make('button_secondary', __('section-hero.button_secondary')),
                 ]),
         ];
     }

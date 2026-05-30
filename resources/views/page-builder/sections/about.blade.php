@@ -16,12 +16,12 @@
 
             <div class="md:ml-auto flex gap-3 items-center flex-wrap">
                 @if ($buttonPrimary['text'] && $buttonPrimary['url'])
-                    <a href="{{ $buttonPrimary['url'] }}" class="btn-secondary shadow-sm">
+                    <a href="{{ $buttonPrimary['url'] }}" target="{{ $buttonPrimary['target'] }}" class="btn-secondary shadow-sm">
                         {{ $buttonPrimary['text'] }}
                     </a>
                 @endif
                 @if ($buttonSecondary['text'] && $buttonSecondary['url'])
-                    <a href="{{ $buttonSecondary['url'] }}" class="btn-primary shadow-sm">
+                    <a href="{{ $buttonSecondary['url'] }}" target="{{ $buttonSecondary['target'] }}" class="btn-primary shadow-sm">
                         {{ $buttonSecondary['text'] }}
                     </a>
                 @endif

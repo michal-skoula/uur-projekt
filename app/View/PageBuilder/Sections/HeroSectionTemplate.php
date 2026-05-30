@@ -3,6 +3,7 @@
 namespace App\View\PageBuilder\Sections;
 
 use App\Contracts\SectionTemplate;
+use App\Filament\Components\LinkInput;
 use Illuminate\Contracts\View\View;
 
 final class HeroSectionTemplate implements SectionTemplate
@@ -17,11 +18,11 @@ final class HeroSectionTemplate implements SectionTemplate
 
     public ?string $bubble = null;
 
-    /** @var array{text: string, url: string} */
-    public array $buttonPrimary = ['text' => '', 'url' => ''];
+    /** @var array{text: string, url: string, target: string} */
+    public array $buttonPrimary = ['text' => '', 'url' => '#', 'target' => '_self'];
 
-    /** @var array{text: string, url: string} */
-    public array $buttonSecondary = ['text' => '', 'url' => ''];
+    /** @var array{text: string, url: string, target: string} */
+    public array $buttonSecondary = ['text' => '', 'url' => '#', 'target' => '_self'];
 
     public function prepareData(array $data): static
     {
@@ -30,13 +31,19 @@ final class HeroSectionTemplate implements SectionTemplate
         $this->backgroundImg = $data['background']['img'] ?? null;
         $this->backgroundVideo = $data['background']['video'] ?? null;
         $this->bubble = $data['bubble'] ?? null;
+
+        $primaryLink = LinkInput::resolve($data['button_primary']['link'] ?? null);
         $this->buttonPrimary = [
             'text' => $data['button_primary']['text'] ?? '',
-            'url' => $data['button_primary']['url'] ?? '',
+            'url' => $primaryLink['url'],
+            'target' => $primaryLink['target'],
         ];
+
+        $secondaryLink = LinkInput::resolve($data['button_secondary']['link'] ?? null);
         $this->buttonSecondary = [
             'text' => $data['button_secondary']['text'] ?? '',
-            'url' => $data['button_secondary']['url'] ?? '',
+            'url' => $secondaryLink['url'],
+            'target' => $secondaryLink['target'],
         ];
 
         return $this;

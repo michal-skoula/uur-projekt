@@ -44,6 +44,7 @@
                     <div class="flex justify-end gap-4">
                         <a
                             href="{{ $buttonPrimary['url'] }}"
+                            target="{{ $buttonPrimary['target'] }}"
                             class="btn-primary md:px-10 md:py-5 py-4 md:motion-safe:hover:px-14 md:motion-safe:focus:px-14"
                         >
                             {{ $buttonPrimary['text'] }}
@@ -51,6 +52,7 @@
 
                         <a
                             href="{{ $buttonSecondary['url'] }}"
+                            target="{{ $buttonSecondary['target'] }}"
                             class="btn-secondary md:px-10 md:py-5 py-4 md:motion-safe:hover:px-14 md:motion-safe:focus:px-14"
                         >
                             {{ $buttonSecondary['text'] }}

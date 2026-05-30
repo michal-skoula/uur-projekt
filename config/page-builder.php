@@ -1,9 +1,11 @@
 <?php
 
 use App\Filament\PageBuilder\Sections\AboutSectionSchema;
+use App\Filament\PageBuilder\Sections\DanceSectionSchema;
 use App\Filament\PageBuilder\Sections\GallerySectionSchema;
 use App\Filament\PageBuilder\Sections\HeroSectionSchema;
 use App\View\PageBuilder\Sections\AboutSectionTemplate;
+use App\View\PageBuilder\Sections\DanceSectionTemplate;
 use App\View\PageBuilder\Sections\GallerySectionTemplate;
 use App\View\PageBuilder\Sections\HeroSectionTemplate;
 
@@ -40,6 +42,10 @@ return [
         'gallery' => [
             'schema' => GallerySectionSchema::class,
             'template' => GallerySectionTemplate::class,
+        ],
+        'dance' => [
+            'schema' => DanceSectionSchema::class,
+            'template' => DanceSectionTemplate::class,
         ],
         // @sections-end [DO NOT TOUCH]
     ],

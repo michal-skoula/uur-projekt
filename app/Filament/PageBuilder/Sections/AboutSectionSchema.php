@@ -22,7 +22,7 @@ final class AboutSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-about.label');
+        return __('sections/about.label');
     }
 
     public static function getIcon(): Heroicon
@@ -33,44 +33,44 @@ final class AboutSectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make(__('section-about.section_content'))
+            Section::make(__('sections/about.section_content'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     TextInput::make('tagline')
-                        ->label(__('section-about.tagline'))
+                        ->label(__('sections/about.tagline'))
                         ->required(),
 
                     TextInput::make('title')
-                        ->label(__('section-about.title'))
+                        ->label(__('sections/about.title'))
                         ->required(),
 
                     RichEditor::make('description')
-                        ->label(__('section-about.description'))
+                        ->label(__('sections/about.description'))
                         ->columnSpanFull()
                         ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList'])
                         ->required(),
 
                     TextInput::make('bubble')
-                        ->label(__('section-about.bubble'))
-                        ->helperText(__('section-about.bubble_help'))
+                        ->label(__('sections/about.bubble'))
+                        ->helperText(__('sections/about.bubble_help'))
                         ->columnSpanFull(),
                 ]),
 
-            Section::make(__('section-about.section_buttons'))
+            Section::make(__('sections/about.section_buttons'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
-                    ButtonInput::make('button_primary', __('section-about.button_primary')),
-                    ButtonInput::make('button_secondary', __('section-about.button_secondary')),
+                    ButtonInput::make('button_primary', __('sections/about.button_primary')),
+                    ButtonInput::make('button_secondary', __('sections/about.button_secondary')),
                 ]),
 
-            Section::make(__('section-about.section_gallery'))
+            Section::make(__('sections/about.section_gallery'))
                 ->columnSpanFull()
                 ->schema([
                     FileUpload::make('gallery')
-                        ->label(__('section-about.gallery'))
-                        ->helperText(__('section-about.gallery_help'))
+                        ->label(__('sections/about.gallery'))
+                        ->helperText(__('sections/about.gallery_help'))
                         ->image()
                         ->multiple()
                         ->reorderable()

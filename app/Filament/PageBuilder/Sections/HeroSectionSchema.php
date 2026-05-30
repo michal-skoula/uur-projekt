@@ -21,7 +21,7 @@ final class HeroSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-hero.label');
+        return __('sections/hero.label');
     }
 
     public static function getIcon(): Heroicon
@@ -32,45 +32,45 @@ final class HeroSectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make(__('section-hero.section_content'))
+            Section::make(__('sections/hero.section_content'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     TextInput::make('title')
-                        ->label(__('section-hero.title'))
+                        ->label(__('sections/hero.title'))
                         ->required(),
 
                     TextInput::make('description')
-                        ->label(__('section-hero.description'))
+                        ->label(__('sections/hero.description'))
                         ->required(),
 
                     TextInput::make('bubble')
-                        ->label(__('section-hero.bubble'))
-                        ->helperText(__('section-hero.bubble_help')),
+                        ->label(__('sections/hero.bubble'))
+                        ->helperText(__('sections/hero.bubble_help')),
                 ]),
 
-            Section::make(__('section-hero.section_background'))
+            Section::make(__('sections/hero.section_background'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     FileUpload::make('background.img')
-                        ->label(__('section-hero.background_img'))
+                        ->label(__('sections/hero.background_img'))
                         ->image()
                         ->visibility('public')
                         ->required(),
 
                     FileUpload::make('background.video')
-                        ->label(__('section-hero.background_video'))
+                        ->label(__('sections/hero.background_video'))
                         ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
                         ->visibility('public'),
                 ]),
 
-            Section::make(__('section-hero.section_buttons'))
+            Section::make(__('sections/hero.section_buttons'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
-                    ButtonInput::make('button_primary', __('section-hero.button_primary')),
-                    ButtonInput::make('button_secondary', __('section-hero.button_secondary')),
+                    ButtonInput::make('button_primary', __('sections/hero.button_primary')),
+                    ButtonInput::make('button_secondary', __('sections/hero.button_secondary')),
                 ]),
         ];
     }

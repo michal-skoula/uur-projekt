@@ -23,7 +23,7 @@ final class TimetableSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-timetable.label');
+        return __('sections/timetable.label');
     }
 
     public static function getIcon(): Heroicon
@@ -34,60 +34,60 @@ final class TimetableSectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make(__('section-timetable.section_general'))
+            Section::make(__('sections/timetable.section_general'))
                 ->columnSpanFull()
                 ->schema([
                     TextInput::make('general.title')
-                        ->label(__('section-timetable.general_title'))
+                        ->label(__('sections/timetable.general_title'))
                         ->required(),
 
                     RichEditor::make('general.text')
-                        ->label(__('section-timetable.general_text'))
+                        ->label(__('sections/timetable.general_text'))
                         ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList'])
                         ->columnSpanFull(),
                 ]),
 
-            Section::make(__('section-timetable.section_signup'))
+            Section::make(__('sections/timetable.section_signup'))
                 ->columnSpanFull()
                 ->schema([
                     TextInput::make('signup.title')
-                        ->label(__('section-timetable.signup_title'))
+                        ->label(__('sections/timetable.signup_title'))
                         ->required(),
 
                     RichEditor::make('signup.text')
-                        ->label(__('section-timetable.signup_text'))
+                        ->label(__('sections/timetable.signup_text'))
                         ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList'])
                         ->columnSpanFull(),
 
-                    ButtonInput::make('signup.button', __('section-timetable.signup_button'))
+                    ButtonInput::make('signup.button', __('sections/timetable.signup_button'))
                         ->columnSpanFull(),
                 ]),
 
-            Section::make(__('section-timetable.section_timetables'))
+            Section::make(__('sections/timetable.section_timetables'))
                 ->columnSpanFull()
                 ->schema([
                     TextInput::make('timetable_selector.title')
-                        ->label(__('section-timetable.timetables_title'))
+                        ->label(__('sections/timetable.timetables_title'))
                         ->required(),
 
                     TextInput::make('timetable_selector.detail')
-                        ->label(__('section-timetable.timetables_detail')),
+                        ->label(__('sections/timetable.timetables_detail')),
 
                     Repeater::make('timetable_selector.timetables')
-                        ->label(__('section-timetable.timetables'))
+                        ->label(__('sections/timetable.timetables'))
                         ->schema([
                             TextInput::make('name')
-                                ->label(__('section-timetable.timetable_name'))
+                                ->label(__('sections/timetable.timetable_name'))
                                 ->required(),
 
                             FileUpload::make('img')
-                                ->label(__('section-timetable.timetable_img'))
+                                ->label(__('sections/timetable.timetable_img'))
                                 ->image()
                                 ->visibility('public')
                                 ->directory('timetables'),
 
                             FileUpload::make('pdf')
-                                ->label(__('section-timetable.timetable_pdf'))
+                                ->label(__('sections/timetable.timetable_pdf'))
                                 ->acceptedFileTypes(['application/pdf'])
                                 ->visibility('public')
                                 ->directory('timetables'),

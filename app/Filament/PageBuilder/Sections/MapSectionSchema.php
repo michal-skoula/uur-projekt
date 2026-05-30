@@ -19,7 +19,7 @@ final class MapSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-map.label');
+        return __('sections/map.label');
     }
 
     public static function getIcon(): Heroicon
@@ -31,18 +31,18 @@ final class MapSectionSchema implements SectionSchema
     {
         return [
             TextInput::make('title')
-                ->label(__('section-map.title'))
+                ->label(__('sections/map.title'))
                 ->required()
                 ->columnSpanFull(),
 
             RichEditor::make('text')
-                ->label(__('section-map.text'))
+                ->label(__('sections/map.text'))
                 ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList'])
                 ->columnSpanFull(),
 
             TextInput::make('map_url')
-                ->label(__('section-map.map_url'))
-                ->helperText(__('section-map.map_url_help'))
+                ->label(__('sections/map.map_url'))
+                ->helperText(__('sections/map.map_url_help'))
                 ->url()
                 ->columnSpanFull(),
         ];

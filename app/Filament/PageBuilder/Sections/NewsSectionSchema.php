@@ -18,7 +18,7 @@ final class NewsSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-news.label');
+        return __('sections/news.label');
     }
 
     public static function getIcon(): Heroicon
@@ -30,16 +30,16 @@ final class NewsSectionSchema implements SectionSchema
     {
         return [
             TextInput::make('tagline')
-                ->label(__('section-news.tagline'))
+                ->label(__('sections/news.tagline'))
                 ->columnSpanFull(),
 
             TextInput::make('title')
-                ->label(__('section-news.title'))
+                ->label(__('sections/news.title'))
                 ->required()
                 ->columnSpanFull(),
 
             TextInput::make('button_text')
-                ->label(__('section-news.button_text'))
+                ->label(__('sections/news.button_text'))
                 ->required()
                 ->columnSpanFull(),
         ];

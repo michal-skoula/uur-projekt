@@ -17,8 +17,8 @@ class NewsTable
             ->columns([
                 ImageColumn::make('thumbnail')
                     ->label('')
-                    ->width(64)
-                    ->height(40)
+                    ->imageWidth(64)
+                    ->imageHeight(40)
                     ->defaultImageUrl(null),
 
                 TextColumn::make('title')

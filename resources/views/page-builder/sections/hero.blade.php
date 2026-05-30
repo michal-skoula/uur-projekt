@@ -1,5 +1,5 @@
 <section id="hero" class="bg-primary-darkest text-white">
-    <div class="mx-auto max-w-screen-2xl max-h-[70rem] h-[85vh] min-h-[40rem] md:min-h-[50rem] sm:px-8 sm:py-8 px-3 py-4">
+    <div class="mx-auto max-w-screen-2xl max-h-280 h-[85vh] min-h-160 md:min-h-200 sm:px-8 sm:py-8 px-3 py-4">
         <div class="relative h-full w-full border-2 border-primary-outline rounded-2xl overflow-clip">
 
             {{-- Background media --}}

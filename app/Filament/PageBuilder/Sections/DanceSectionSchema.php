@@ -22,7 +22,7 @@ final class DanceSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-dance.label');
+        return __('sections/dance.label');
     }
 
     public static function getIcon(): Heroicon
@@ -33,46 +33,46 @@ final class DanceSectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make(__('section-dance.section_content'))
+            Section::make(__('sections/dance.section_content'))
                 ->columnSpanFull()
                 ->schema([
                     TextInput::make('heading')
-                        ->label(__('section-dance.heading'))
+                        ->label(__('sections/dance.heading'))
                         ->required(),
 
                     TextInput::make('motto')
-                        ->label(__('section-dance.motto'))
-                        ->helperText(__('section-dance.motto_help'))
+                        ->label(__('sections/dance.motto'))
+                        ->helperText(__('sections/dance.motto_help'))
                         ->required(),
                 ]),
 
-            Section::make(__('section-dance.section_styles'))
+            Section::make(__('sections/dance.section_styles'))
                 ->columnSpanFull()
                 ->schema([
                     Repeater::make('dance_styles')
-                        ->label(__('section-dance.dance_styles'))
+                        ->label(__('sections/dance.dance_styles'))
                         ->simple(
                             TextInput::make('label')
-                                ->label(__('section-dance.style_label'))
+                                ->label(__('sections/dance.style_label'))
                                 ->required(),
                         )
                         ->reorderable()
                         ->columnSpanFull(),
                 ]),
 
-            Section::make(__('section-dance.section_text'))
+            Section::make(__('sections/dance.section_text'))
                 ->columnSpanFull()
                 ->schema([
                     Grid::make(2)
                         ->columnSpanFull()
                         ->schema([
                             RichEditor::make('text_left')
-                                ->label(__('section-dance.text_left'))
+                                ->label(__('sections/dance.text_left'))
                                 ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'h3'])
                                 ->required(),
 
                             RichEditor::make('text_right')
-                                ->label(__('section-dance.text_right'))
+                                ->label(__('sections/dance.text_right'))
                                 ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'h3'])
                                 ->required(),
                         ]),

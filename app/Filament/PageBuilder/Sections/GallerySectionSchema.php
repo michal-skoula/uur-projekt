@@ -20,7 +20,7 @@ final class GallerySectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return __('section-gallery.label');
+        return __('sections/gallery.label');
     }
 
     public static function getIcon(): Heroicon
@@ -31,24 +31,24 @@ final class GallerySectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make(__('section-gallery.section_content'))
+            Section::make(__('sections/gallery.section_content'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     TextInput::make('heading')
-                        ->label(__('section-gallery.heading'))
+                        ->label(__('sections/gallery.heading'))
                         ->required(),
 
                     TextInput::make('description')
-                        ->label(__('section-gallery.description')),
+                        ->label(__('sections/gallery.description')),
                 ]),
 
-            Section::make(__('section-gallery.section_gallery'))
+            Section::make(__('sections/gallery.section_gallery'))
                 ->columnSpanFull()
                 ->schema([
                     FileUpload::make('gallery')
-                        ->label(__('section-gallery.gallery'))
-                        ->helperText(__('section-gallery.gallery_help'))
+                        ->label(__('sections/gallery.gallery'))
+                        ->helperText(__('sections/gallery.gallery_help'))
                         ->image()
                         ->multiple()
                         ->reorderable()

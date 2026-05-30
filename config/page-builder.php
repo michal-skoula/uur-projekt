@@ -1,6 +1,8 @@
 <?php
 
+use App\Filament\PageBuilder\Sections\AboutSectionSchema;
 use App\Filament\PageBuilder\Sections\HeroSectionSchema;
+use App\View\PageBuilder\Sections\AboutSectionTemplate;
 use App\View\PageBuilder\Sections\HeroSectionTemplate;
 
 return [
@@ -28,6 +30,10 @@ return [
         'hero' => [
             'schema' => HeroSectionSchema::class,
             'template' => HeroSectionTemplate::class,
+        ],
+        'about' => [
+            'schema' => AboutSectionSchema::class,
+            'template' => AboutSectionTemplate::class,
         ],
         // @sections-end [DO NOT TOUCH]
     ],

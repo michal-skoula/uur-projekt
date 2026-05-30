@@ -21,7 +21,7 @@ final class HeroSectionSchema implements SectionSchema
 
     public static function getLabel(): string
     {
-        return 'Úvodní sekce';
+        return __('section-hero.label');
     }
 
     public static function getIcon(): Heroicon
@@ -32,40 +32,40 @@ final class HeroSectionSchema implements SectionSchema
     public static function getSchema(): array
     {
         return [
-            Section::make('Obsah')
+            Section::make(__('section-hero.section_content'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     TextInput::make('title')
-                        ->label('Nadpis')
+                        ->label(__('section-hero.title'))
                         ->required(),
 
                     TextInput::make('description')
-                        ->label('Popis')
+                        ->label(__('section-hero.description'))
                         ->required(),
 
                     TextInput::make('bubble')
-                        ->label('Bublina (volitelné)')
-                        ->helperText('Krátký text zobrazený v kruhové bublině. Podporuje nové řádky pomocí \\n.'),
+                        ->label(__('section-hero.bubble'))
+                        ->helperText(__('section-hero.bubble_help')),
                 ]),
 
-            Section::make('Pozadí')
+            Section::make(__('section-hero.section_background'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
                     FileUpload::make('background.img')
-                        ->label('Obrázek pozadí')
+                        ->label(__('section-hero.background_img'))
                         ->image()
                         ->visibility('public')
                         ->required(),
 
                     FileUpload::make('background.video')
-                        ->label('Video pozadí (volitelné)')
+                        ->label(__('section-hero.background_video'))
                         ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
                         ->visibility('public'),
                 ]),
 
-            Section::make('Tlačítka')
+            Section::make(__('section-hero.section_buttons'))
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
@@ -73,20 +73,20 @@ final class HeroSectionSchema implements SectionSchema
                         ->columnSpanFull()
                         ->schema([
                             TextInput::make('button_primary.text')
-                                ->label('Primární tlačítko – text')
+                                ->label(__('section-hero.button_primary_text'))
                                 ->required(),
 
                             TextInput::make('button_primary.url')
-                                ->label('Primární tlačítko – URL')
+                                ->label(__('section-hero.button_primary_url'))
                                 ->url()
                                 ->required(),
 
                             TextInput::make('button_secondary.text')
-                                ->label('Sekundární tlačítko – text')
+                                ->label(__('section-hero.button_secondary_text'))
                                 ->required(),
 
                             TextInput::make('button_secondary.url')
-                                ->label('Sekundární tlačítko – URL')
+                                ->label(__('section-hero.button_secondary_url'))
                                 ->url()
                                 ->required(),
                         ]),

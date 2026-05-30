@@ -6,12 +6,14 @@ use App\Filament\PageBuilder\Sections\GallerySectionSchema;
 use App\Filament\PageBuilder\Sections\HeroSectionSchema;
 use App\Filament\PageBuilder\Sections\MapSectionSchema;
 use App\Filament\PageBuilder\Sections\NewsSectionSchema;
+use App\Filament\PageBuilder\Sections\TimetableSectionSchema;
 use App\View\PageBuilder\Sections\AboutSectionTemplate;
 use App\View\PageBuilder\Sections\DanceSectionTemplate;
 use App\View\PageBuilder\Sections\GallerySectionTemplate;
 use App\View\PageBuilder\Sections\HeroSectionTemplate;
 use App\View\PageBuilder\Sections\MapSectionTemplate;
 use App\View\PageBuilder\Sections\NewsSectionTemplate;
+use App\View\PageBuilder\Sections\TimetableSectionTemplate;
 
 return [
     /*
@@ -58,6 +60,10 @@ return [
         'news' => [
             'schema' => NewsSectionSchema::class,
             'template' => NewsSectionTemplate::class,
+        ],
+        'timetable' => [
+            'schema' => TimetableSectionSchema::class,
+            'template' => TimetableSectionTemplate::class,
         ],
         // @sections-end [DO NOT TOUCH]
     ],

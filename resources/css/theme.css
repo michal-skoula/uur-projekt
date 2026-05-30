@@ -1,0 +1,33 @@
+@theme {
+    --font-sans: 'gothamRounded';
+    --font-serif: 'desyrel';
+    --text-title: 5rem;
+
+    --color-primary-darkest: hsl(191, 88%, 10%);
+    --color-primary-darker: hsl(191, 90%, 12%);
+    --color-primary-dark: hsl(191, 89%, 20%);
+    --color-primary-outline: hsl(191, 85%, 19%);
+
+    --color-white: hsl(0, 0%, 100%);
+    --color-gray: hsl(0, 0%, 84%);
+
+    --color-accent-mint: hsl(127, 100%, 73%);
+    --color-accent-lime: hsl(83, 100%, 66%);
+    --color-accent-yellow: hsl(59, 100%, 60%);
+
+    --color-accent-teal: hsl(178, 80%, 55%);
+    --color-accent-ocean: hsl(193, 72%, 49%);
+    --color-accent-aquamarine: hsl(195, 100%, 64%);
+
+    --breakpoint-xs: 30rem;
+}
+
+:root {
+    --gradient-primary: linear-gradient(45deg, var(--color-accent-yellow) 0%, var(--color-accent-lime) 100%);
+    --gradient-secondary: linear-gradient(45deg, var(--color-accent-mint) 0%, var(--color-accent-aquamarine) 100%);
+    --nav-submenu-distance: 0.5rem;
+}
+
+@theme inline {
+    --breakpoint-nav: 65rem;
+}

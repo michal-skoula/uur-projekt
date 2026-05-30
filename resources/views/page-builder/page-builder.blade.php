@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $page->title }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-</head>
-<body class="antialiased">
-    <main>
-        @foreach ($sections as $section)
-            {!! $section !!}
-        @endforeach
-    </main>
-    @livewireScripts
-</body>
-</html>
+@extends('layouts.app', ['title' => $page->title])
+
+@section('content')
+    @foreach ($sections as $section)
+        {!! $section !!}
+    @endforeach
+@endsection

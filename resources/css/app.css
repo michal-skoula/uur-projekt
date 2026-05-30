@@ -1,11 +1,154 @@
 @import 'tailwindcss';
+@import './fonts.css';
+@import './theme.css';
+@import './navbar.css' layer(utilities);
+@import './text-spacing.css' layer(base);
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@layer base {
+    :focus-visible {
+        outline: 3px solid var(--color-accent-teal);
+    }
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-zinc-200, currentColor);
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .h1, .h2, .h3, .h4, .h5, .h6 {
+        @apply leading-[110%] text-white font-semibold;
+    }
+
+    h1, .h1 { @apply font-serif text-5xl; }
+    h2, .h2 { @apply font-sans text-4xl; }
+    h3, .h3 { @apply font-sans text-3xl; }
+    h4, .h4 { @apply font-sans text-2xl; }
+    h5, .h5 { @apply font-sans text-xl; }
+    h6, .h6 { @apply font-sans text-lg; }
+
+    p, li, span {
+        @apply text-base leading-[150%];
+    }
+
+    ul {
+        @apply list-disc ml-6 my-1;
+    }
+
+    a {
+        @apply no-underline;
+    }
+
+    table {
+        border-radius: 1rem;
+        overflow: clip;
+    }
+
+    thead {
+        border: none !important;
+    }
+
+    th {
+        background: var(--color-accent-teal);
+        color: var(--color-primary-darkest) !important;
+        border: none !important;
+        padding-block: 0.8rem !important;
+    }
+
+    table tr:not(:has(th)) {
+        &:nth-child(odd)  { @apply bg-primary-darker; }
+        &:nth-child(even) { @apply bg-primary-darkest; }
+    }
+
+    td {
+        border: none !important;
+        padding-block: 0.7rem !important;
+    }
+}
+
+@layer utilities {
+    .text-gradient-primary {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .text-gradient-secondary {
+        background: var(--gradient-secondary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+}
+
+@layer components {
+    .btn-primary, .btn-secondary, .btn-outline {
+        @apply px-6 py-3 rounded-full no-underline inline-flex items-center
+            text-primary-darkest transition-all duration-300 ease-in-out cursor-pointer;
+    }
+
+    .btn-primary:not(.no-resize),
+    .btn-secondary:not(.no-resize),
+    .btn-outline:not(.no-resize) {
+        @apply motion-safe:hover:px-9 motion-safe:focus:px-9;
+    }
+
+    .btn-primary  { background: var(--gradient-primary); }
+    .btn-secondary { background: var(--gradient-secondary); }
+
+    .btn-outline {
+        @apply active:font-normal border border-white text-white;
+    }
+
+    .btn-link {
+        @apply inline-block p-2 text-gray;
+    }
+
+    .section {
+        @apply lg:py-24 lg:px-16 md:py-20 md:px-12 px-5 py-12;
+    }
+
+    .section > .max-content-width {
+        @apply max-w-screen-xl mx-auto;
+    }
+
+    /* Collapse padding between adjacent same-bg sections */
+    .section.bg-primary-darkest + .section.bg-primary-darkest,
+    .section.bg-white + .section.bg-white {
+        padding-block-start: 0 !important;
+    }
+
+    .custom-logo {
+        @apply block h-16 w-full;
+    }
+
+    /* Timetable interactive states */
+    [dcpp-timetable] {
+        @apply border-2 border-primary-dark bg-primary-dark hover:border-accent-teal/70!;
+    }
+
+    [dcpp-timetable].open {
+        @apply border-2 border-accent-teal/60 bg-accent-teal/30 text-white
+            duration-150 motion-safe:transition-colors;
+    }
+
+    div:has(> [dcpp-timetable-button]:not(.enabled)) {
+        @apply cursor-not-allowed;
+    }
+
+    [dcpp-timetable-button] {
+        @apply cursor-not-allowed hover:px-6 focus:px-6 border-white/50 text-white/50;
+    }
+
+    [dcpp-timetable-button].enabled {
+        @apply cursor-pointer hover:px-9 focus:px-9 border-white text-white;
+    }
 }

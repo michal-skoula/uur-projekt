@@ -1,0 +1,55 @@
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_bookitalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_mediumitalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: gothamRounded;
+    src: url('../fonts/gothamrnd_bolditalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: desyrel;
+    src: url('../fonts/serif_desyrel.regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}

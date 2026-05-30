@@ -1,0 +1,85 @@
+.post-container-styles {
+    h1 {
+        margin: 2rem 0 1.5rem;
+    }
+
+    h2 {
+        margin: 1.8rem 0 1.2rem;
+    }
+
+    h3 {
+        margin: 1.6rem 0 1rem;
+    }
+
+    h4, h5, h6 {
+        margin: 1.4rem 0 0.8rem;
+    }
+
+    p {
+        margin: 0 0 1.2rem;
+    }
+
+    ul, ol {
+        margin: 1.2rem 0;
+        padding-left: 2rem;
+    }
+
+    li {
+        margin-bottom: 0.1rem;
+    }
+
+    li > ul,
+    li > ol {
+        margin: 0.5rem 0;
+    }
+
+    ul > li {
+        list-style: disc !important;
+    }
+
+    ol > li {
+        list-style: decimal !important;
+    }
+
+    blockquote {
+        margin: 1.5rem 0;
+        padding-left: 1.5rem;
+    }
+
+    table {
+        margin: 1.5rem 0;
+    }
+
+    dl {
+        margin: 1.2rem 0;
+    }
+
+    dt {
+        margin-top: 1rem;
+    }
+
+    dd {
+        margin: 0.5rem 0 0.5rem 2rem;
+    }
+
+    hr {
+        margin: 2rem 0;
+    }
+
+    pre, code {
+        margin: 1.2rem 0;
+    }
+
+    address {
+        margin: 1.2rem 0;
+    }
+
+    img {
+        width: 100%;
+        border-radius: var(--radius-lg);
+    }
+
+    a {
+        text-decoration: underline !important;
+    }
+}

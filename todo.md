@@ -24,4 +24,6 @@
 
 
 ## Issues
-- AI Took it too literally: ContentSection `section` is obv not a real user facing section - explain how that should wokr
+- AI Took it too literally: ContentSection `section` is obv not a real user facing section - explain how that should work
+- Since there's multiple steps, ex. first you need the
+- Copy is abyssmal

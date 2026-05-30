@@ -46,7 +46,7 @@ The command also registers the section in `config/page-builder.php` automaticall
 |---------------------|-------------------------------------------------------------|
 | Schemas             | `app/Filament/PageBuilder/Sections/{Name}SectionSchema.php` |
 | Blade templates     | `app/View/PageBuilder/Sections/{Name}SectionTemplate.php`   |
-| Blade views         | `resources/views/page-builder/sections/{slug}.blade.php`    |
+| Blade views         | `resources/views/page-builder.sections/{slug}.blade.php`    |
 | Livewire components | `app/Livewire/{Name}.php`                                   |
 | Livewire views      | `resources/views/livewire/{kebab-name}.blade.php`           |
 | Livewire tests      | `tests/Feature/Livewire/{Name}Test.php`                     |

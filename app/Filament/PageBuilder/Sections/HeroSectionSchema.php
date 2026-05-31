@@ -5,7 +5,7 @@ namespace App\Filament\PageBuilder\Sections;
 use App\Concerns\BuildsSectionSchema;
 use App\Contracts\SectionSchema;
 use App\Filament\Components\ButtonInput;
-use Filament\Forms\Components\FileUpload;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
@@ -53,16 +53,13 @@ final class HeroSectionSchema implements SectionSchema
                 ->columnSpanFull()
                 ->columns(2)
                 ->schema([
-                    FileUpload::make('background.img')
+                    CuratorPicker::make('background.img')
                         ->label(__('sections/hero.background_img'))
-                        ->image()
-                        ->visibility('public')
                         ->required(),
 
-                    FileUpload::make('background.video')
+                    CuratorPicker::make('background.video')
                         ->label(__('sections/hero.background_video'))
-                        ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg'])
-                        ->visibility('public'),
+                        ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg']),
                 ]),
 
             Section::make(__('sections/hero.section_buttons'))

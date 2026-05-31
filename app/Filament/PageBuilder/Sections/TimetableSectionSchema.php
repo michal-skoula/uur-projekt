@@ -5,7 +5,7 @@ namespace App\Filament\PageBuilder\Sections;
 use App\Concerns\BuildsSectionSchema;
 use App\Contracts\SectionSchema;
 use App\Filament\Components\ButtonInput;
-use Filament\Forms\Components\FileUpload;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -80,16 +80,13 @@ final class TimetableSectionSchema implements SectionSchema
                                 ->label(__('sections/timetable.timetable_name'))
                                 ->required(),
 
-                            FileUpload::make('img')
+                            CuratorPicker::make('img')
                                 ->label(__('sections/timetable.timetable_img'))
-                                ->image()
-                                ->visibility('public')
                                 ->directory('timetables'),
 
-                            FileUpload::make('pdf')
+                            CuratorPicker::make('pdf')
                                 ->label(__('sections/timetable.timetable_pdf'))
                                 ->acceptedFileTypes(['application/pdf'])
-                                ->visibility('public')
                                 ->directory('timetables'),
                         ])
                         ->reorderable()

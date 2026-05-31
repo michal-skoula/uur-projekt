@@ -4,7 +4,7 @@ namespace App\Filament\PageBuilder\Sections;
 
 use App\Concerns\BuildsSectionSchema;
 use App\Contracts\SectionSchema;
-use Filament\Forms\Components\FileUpload;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
@@ -46,13 +46,10 @@ final class GallerySectionSchema implements SectionSchema
             Section::make(__('sections/gallery.section_gallery'))
                 ->columnSpanFull()
                 ->schema([
-                    FileUpload::make('gallery')
+                    CuratorPicker::make('gallery')
                         ->label(__('sections/gallery.gallery'))
                         ->helperText(__('sections/gallery.gallery_help'))
-                        ->image()
                         ->multiple()
-                        ->reorderable()
-                        ->visibility('public')
                         ->columnSpanFull(),
                 ]),
         ];

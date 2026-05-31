@@ -4,8 +4,8 @@ namespace App\Filament\Pages;
 
 use App\Filament\Components\ButtonInput;
 use App\Settings\PopupSettings;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use BackedEnum;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -83,12 +83,9 @@ class PopupSettingsPage extends SettingsPage
 
                     ButtonInput::make('popupCta', __('settings/popup.popup.cta.title')),
 
-                    FileUpload::make('popupImage')
+                    CuratorPicker::make('popupImage')
                         ->label(__('settings/popup.popup.image.label'))
-                        ->helperText(__('settings/popup.popup.image.hint'))
-                        ->image()
-                        ->visibility('public')
-                        ->image(),
+                        ->helperText(__('settings/popup.popup.image.hint')),
 
                 ]),
 

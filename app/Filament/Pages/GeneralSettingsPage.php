@@ -3,11 +3,12 @@
 namespace App\Filament\Pages;
 
 use App\Settings\GeneralSettings;
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use BackedEnum;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SettingsPage;
+use Filament\Panel\Concerns\HasGlobalSearch;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -15,6 +16,8 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class GeneralSettingsPage extends SettingsPage
 {
+    use HasGlobalSearch;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Cog6Tooth;
@@ -49,11 +52,9 @@ class GeneralSettingsPage extends SettingsPage
                         ->helperText(__('settings/general.site_identity.description_field.hint'))
                         ->rows(2),
 
-                    FileUpload::make('logo')
+                    CuratorPicker::make('logo')
                         ->label(__('settings/general.site_identity.logo.label'))
-                        ->helperText(__('settings/general.site_identity.logo.hint'))
-                        ->visibility('public')
-                        ->image(),
+                        ->helperText(__('settings/general.site_identity.logo.hint')),
                 ]),
 
             Section::make(__('settings/general.favicon.title'))
@@ -61,17 +62,13 @@ class GeneralSettingsPage extends SettingsPage
                 ->description(__('settings/general.favicon.description'))
                 ->columns(1)
                 ->schema([
-                    FileUpload::make('faviconLight')
+                    CuratorPicker::make('faviconLight')
                         ->label(__('settings/general.favicon.light.label'))
-                        ->helperText(__('settings/general.favicon.light.hint'))
-                        ->visibility('public')
-                        ->image(),
+                        ->helperText(__('settings/general.favicon.light.hint')),
 
-                    FileUpload::make('faviconDark')
+                    CuratorPicker::make('faviconDark')
                         ->label(__('settings/general.favicon.dark.label'))
-                        ->helperText(__('settings/general.favicon.dark.hint'))
-                        ->visibility('public')
-                        ->image(),
+                        ->helperText(__('settings/general.favicon.dark.hint')),
                 ]),
 
         ]);

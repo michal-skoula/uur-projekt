@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -44,10 +44,8 @@ class NewsForm
                     ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'h2', 'h3', 'blockquote'])
                     ->columnSpanFull(),
 
-                FileUpload::make('thumbnail')
+                CuratorPicker::make('thumbnail')
                     ->label('Náhledový obrázek')
-                    ->image()
-                    ->visibility('public')
                     ->directory('news'),
 
                 TextInput::make('author')

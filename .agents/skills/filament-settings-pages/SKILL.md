@@ -224,6 +224,10 @@ TextInput::make('name')
     ),
 ```
 
+## Reusable field components
+
+Check `app/Filament/Components/` for reusable field components (e.g. `ButtonInput`, `LinkInput`) before building custom field combinations.
+
 ## File uploads
 
 Always add `->visibility('public')` when the uploaded file must be accessible on the frontend:
@@ -242,6 +246,7 @@ FileUpload::make('logo')
 
 ## Checklist before finishing
 
+- [ ] CTA / button fields use `ButtonInput::make()` rather than hand-rolled text + link pairs
 - [ ] `$navigationIcon` uses an outlined Heroicon; `$activeNavigationIcon` uses the filled variant
 - [ ] `getNavigationLabel()` and `getTitle()` are method overrides using `__()`
 - [ ] Every group of related fields is in its own `Section::make(heading)->aside()->description()`

@@ -1,3 +1,24 @@
+<autonomy>
+
+# Autonomy
+
+When in an agentic mode, act autonomously. However, should you encounter an issue **within the constraints you are given**, such as:
+- A skill asks you to use a method that doesn't exist or is deprecated, and causes unexpected behaviour or an error
+- An interface is unimplementable in the intended way and requires a bad workaround
+- A class or class method needs to be edited that was marked as out of reach by a skill, documentation, or a `private` property  
+
+You should **never, unless explicitly asked to do so**, use a workaround that compromises the quality of the codebase. Instead, stop execution and ask your supervisor on how to resolve this issue.
+
+</autonomy>
+
+<commits>
+
+# Commits
+
+Don't add any Co-Authored by, Authored-by or similar tags to commits.
+
+</commits>
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

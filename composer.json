@@ -45,9 +45,12 @@
             "@php artisan key:generate",
             "@php artisan migrate --force",
             "npm install --ignore-scripts",
-            "npm run build",
-            "ln -s AGENTS.md CLAUDE.md",
-            "ln -s .agents .claude"
+            "npm run build"
+        ],
+        "symlink": [
+            "rm -f CLAUDE.md && ln -sf AGENTS.md CLAUDE.md",
+            "rm -f .claude && ln -sf .agents .claude",
+            "rm -f .codex && ln -sf .agents .codex"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

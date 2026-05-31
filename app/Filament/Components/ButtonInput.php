@@ -20,7 +20,7 @@ final class ButtonInput
      * Returns a Section containing a text input and a LinkInput.
      * Does not set columnSpanFull so the parent grid controls placement.
      */
-    public static function make(string $name, string $label = ''): Section
+    public static function make(string $name, string $label = '', bool $isRequired = false): Section
     {
         return Section::make($label)
             // Lift the background one step on both sides of the color scale:
@@ -28,9 +28,9 @@ final class ButtonInput
             ->schema([
                 TextInput::make("{$name}.text")
                     ->label(__('components/button.text_label'))
-                    ->required(),
+                    ->required($isRequired),
 
-                LinkInput::make("{$name}.link"),
+                LinkInput::make("{$name}.link", $isRequired),
             ]);
     }
 }

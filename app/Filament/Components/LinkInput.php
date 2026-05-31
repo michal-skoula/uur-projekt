@@ -35,7 +35,7 @@ final class LinkInput
      * flow, so the visible input always occupies column 2 regardless of which
      * variant is active.
      */
-    public static function make(string $name): Grid
+    public static function make(string $name, bool $isRequired = false): Grid
     {
         return Grid::make(3)
             ->columnSpanFull()
@@ -47,6 +47,7 @@ final class LinkInput
                 // so it appears wider and the pair reads as a single compound control.
                 Select::make("{$name}.type")
                     ->label(__('components/link.type_label'))
+                    ->required($isRequired)
                     ->native(false)
                     ->options([
                         'page' => __('components/link.type_page'),
@@ -63,6 +64,7 @@ final class LinkInput
                 // -ml-px overlaps the shared border so it doesn't render double.
                 Select::make("{$name}.url")
                     ->label(__('components/link.page'))
+                    ->required($isRequired)
                     ->options(fn (): array => Page::pluck('title', 'id')->all())
                     ->searchable()
                     ->visible(fn (Get $get): bool => $get("{$name}.type") === 'page')
@@ -76,6 +78,7 @@ final class LinkInput
                         ? __('components/link.url_external')
                         : __('components/link.url_local'))
                     ->visible(fn (Get $get): bool => in_array($get("{$name}.type"), ['external', 'local'], true))
+                    ->required($isRequired)
                     ->columnSpan(2)
                     ->extraAttributes(['class' => 'lg:!rounded-l-none']),
             ]);

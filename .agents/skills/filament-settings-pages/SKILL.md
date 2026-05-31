@@ -131,6 +131,8 @@ Section::make(__('settings/general.site_identity.title'))
 
 All user-visible strings must use `__()`. Lang files for settings pages live under:
 
+> **Language:** Always write lang file content in the **native language of the locale folder**. `lang/cs/` is Czech — write Czech strings, not English.
+
 ```
 lang/{locale}/settings/{page-slug}.php
 ```

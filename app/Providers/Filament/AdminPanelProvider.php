@@ -20,6 +20,8 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Wezlo\FilamentSearchSpotlight\Actions\SpotlightAction;
+use Wezlo\FilamentSearchSpotlight\FilamentSearchSpotlightPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->globalSearch()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
@@ -59,7 +62,8 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins([
-                CuratorPlugin::make()
+                CuratorPlugin::make(),
+                FilamentSearchSpotlightPlugin::make()
             ])
             ->viteTheme('resources/css/filament/admin/theme.css');
     }

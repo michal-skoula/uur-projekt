@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 
 class PageSeeder extends Seeder
 {
-//    use WithoutModelEvents;
+    //    use WithoutModelEvents;
 
     public function run(): void
     {

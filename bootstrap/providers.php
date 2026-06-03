@@ -1,8 +1,13 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\CmsServiceProvider;
+use App\Providers\Filament\AdminPanelProvider;
+use App\Providers\PageBuilderServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\CmsServiceProvider::class,
-    App\Providers\Filament\AdminPanelProvider::class,
-    App\Providers\PageBuilderServiceProvider::class,
+    AppServiceProvider::class,
+    CmsServiceProvider::class,
+    AdminPanelProvider::class,
+    PageBuilderServiceProvider::class,
 ];

@@ -1,10 +1,11 @@
 <?php
 
 use App\Models\News;
+use App\Models\Page;
 
 return [
     'collections' => [
-        // 'contacts' => \App\Models\Contact::class,
+        'pages' => Page::class,
         'news' => News::class,
         // @collections-end [DO NOT TOUCH]
     ],

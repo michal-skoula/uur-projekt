@@ -2,9 +2,4 @@
 
 namespace App\Exceptions;
 
-use App\Exceptions\PageBuilderException;
-
-class PageBuilderSectionRenderException extends PageBuilderException
-{
-
-}
+class PageBuilderSectionRenderException extends PageBuilderException {}

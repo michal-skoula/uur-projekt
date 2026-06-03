@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exceptions\PageBuilderException;
 use App\Helpers\CmsSectionsHelper;
 use App\Models\Page;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\HtmlString;
 

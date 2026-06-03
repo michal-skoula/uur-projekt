@@ -42,13 +42,11 @@ final class CmsSectionsHelper
         }
 
         // Rendering for each type of frontend SectionTemplate
-        if(is_subclass_of($templateClass, LivewireComponent::class)) {
+        if (is_subclass_of($templateClass, LivewireComponent::class)) {
             return new HtmlString(Livewire::mount($templateClass, ['data' => $data]));
-        }
-        else if(is_subclass_of($templateClass, SectionTemplate::class)) {
+        } elseif (is_subclass_of($templateClass, SectionTemplate::class)) {
             return app($templateClass)->prepareData($data)->render();
-        }
-        else {
+        } else {
             throw new PageBuilderSectionRenderException("Section '{$section}' has no defined rendering strategy.");
         }
     }

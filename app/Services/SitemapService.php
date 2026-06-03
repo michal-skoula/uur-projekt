@@ -19,17 +19,14 @@ class SitemapService
         return static::buildFromCollection($pages);
     }
 
-
-
     /**
      * Updates a page's hierarchy to be nested under a different parent.
      *
-     * @param Page $page The page to change.
-     * @param Page|null $parent Parent page. If `null`, becomes root level page.
-     *
+     * @param  Page  $page  The page to change.
+     * @param  Page|null  $parent  Parent page. If `null`, becomes root level page.
      * @return void Updates the record directly in database.
      */
-    public function updatePage(Page $page, Page|null $parent): void
+    public function updatePage(Page $page, ?Page $parent): void
     {
         $page->parent_id = $parent?->id;
         $page->save();
@@ -39,20 +36,18 @@ class SitemapService
      * Traverses the
      *
      * @param list<array{id: int, children: mixed> $schema Subset of the tree to traverse
-     * @param array<int, int> $changes Reference to a new map of changes `[page_id => parent_id]`
-     * @param int|null $parentId ID of the current node's parent
-     *
+     * @param  array<int, int>  $changes  Reference to a new map of changes `[page_id => parent_id]`
+     * @param  int|null  $parentId  ID of the current node's parent
      * @return void Result is written to passed in variable `$changes`.
      */
-    private static function traverse(array|null $schema, array &$changes = [], ?int $parentId = null): void
+    private static function traverse(?array $schema, array &$changes = [], ?int $parentId = null): void
     {
-        foreach ($schema as $item)
-        {
+        foreach ($schema as $item) {
             $pageId = $item['id'];
             $children = $item['children'];
 
             // Duplicate page, a sitemap can only have one page in one place
-            if(in_array($pageId, array_keys($changes))) {
+            if (in_array($pageId, array_keys($changes))) {
                 throw new \RuntimeException("MR PRESIDENT WE'RE TIRED OF WINNING ON $pageId");
             }
 
@@ -60,7 +55,7 @@ class SitemapService
             $changes[$pageId] = $parentId;
 
             // End of tree
-            if(! $children) {
+            if (! $children) {
                 continue;
             }
 
@@ -70,8 +65,7 @@ class SitemapService
     }
 
     /**
-     * @param Collection<Page> $pages
-     * @return array
+     * @param  Collection<Page>  $pages
      */
     private static function buildFromCollection(Collection $pages): array
     {
@@ -85,14 +79,12 @@ class SitemapService
             $nodes[$page->id] = ['page' => $page, 'children' => []];
         }
 
-        foreach ($nodes as $id => &$node)
-        {
+        foreach ($nodes as $id => &$node) {
             $page = $node['page'];
 
-            if($page->parent_id === null) {
+            if ($page->parent_id === null) {
                 $roots[$id] = &$node;
-            }
-            else {
+            } else {
                 $nodes[$page->parent_id]['children'][$id] = $node;
             }
         }

@@ -2,7 +2,6 @@
 @import '../../../../vendor/awcodes/filament-curator/resources/css/plugin.css';
 
 @source '../../../../app/Filament/**/*';
-@source '../../../../resources/views/filament/**/*';
-@source '../../../../resources/views/livewire/**/*';
+@source '../../../../resources/views/**/*';
 @source '../../../../vendor/awcodes/filament-curator/resources/**/*.blade.php';
 @source '../../../../vendor/wezlo/filament-search-spotlight/resources/views/**/*';

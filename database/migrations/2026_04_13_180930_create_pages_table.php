@@ -17,12 +17,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-
             $table->foreign('parent_id', name: 'fk_pages_parent_id')
                 ->references('id')
                 ->on('pages')
                 ->nullOnDelete();
-
 
             $table->index(['parent_id'], name: 'idx_pages_parent');
         });

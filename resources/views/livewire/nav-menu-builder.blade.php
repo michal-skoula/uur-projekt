@@ -41,7 +41,7 @@
                 <button
                     type="button"
                     @click="save()"
-                    class="inline-flex flex-shrink-0 items-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                 >
                     Save Menu
                 </button>
@@ -75,7 +75,7 @@
 @script
 <script>
     function buildMenuItemHtml(pageId, pageTitle) {
-        const escaped = pageTitle
+        const escapedPageTitle = pageTitle
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -88,7 +88,7 @@
                         <path d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM8 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM8 22a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 22a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
                     </svg>
                 </span>
-                <span class="flex-1 text-sm font-medium text-gray-950 dark:text-white">${escaped}</span>
+                <span class="flex-1 text-sm font-medium text-gray-950 dark:text-white">${escapedPageTitle}</span>
                 <button type="button" class="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400" onclick="this.closest('li').remove()" aria-label="Remove">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />

@@ -9,6 +9,9 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
+// todo: add support for defining X levels of nesting - for supporting full sitemap VS just a nav menu thats has 2 levels.
+// todo: rewrite this by-hand, learn how it works.
+// todo: make this use i18n and not hard-coded values.
 class NavMenuBuilder extends Component
 {
     /**

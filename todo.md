@@ -1,3 +1,26 @@
+# Needed for UUR
+
+- [ ] Readme: should contain: 
+    - basic project structure (where to find relevant stuff)
+    - How to operate (/admin UI)
+    - Setup (docker compose up, docker exec -- composer uur)
+- [ ] Full seeder for text, sections, images etc. (learn how to seed Media curator model), and user seeding with autofill on /admin route
+- [ ] Organizing filament sidebar
+- [ ] Cleanup copy
+- [ ] Documentation
+- [ ] Docker compose + cleanup stuff that shouldnt be sent (todo.md, everything that is .gitignore-d, ...)
+- [ ] Dashboard should include some "Quick actions" akin to Gorges, and a few Widgets to make it somewhat useful
+- [ ] Fix DraggableJS navigation builder being ass
+- [ ] Resolve all todos
+
+
+
+---
+
+# Not needed for UUR
+
+
+
 
 ## Page Builder & Content Management
 - [ ] Artisan command to clear non-existent sections in prod DB

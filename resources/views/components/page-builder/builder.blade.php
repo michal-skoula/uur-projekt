@@ -24,10 +24,16 @@ new class extends LivewireComponent
      */
     public array $pageTitles = [];
 
+    /**
+     * @var int Max nesting level allowed in the picker.
+     */
+    public int $maxDepth;
 
-    public function mount(NavMenuSettings $settings): void
+
+    public function mount(NavMenuSettings $settings, int $maxDepth = 2): void
     {
         $this->availableGroups = PageBuilderService::buildAvailableGroups(savePageTitlesTo: $this->pageTitles);
+        $this->maxDepth = $maxDepth;
         $this->menuStructure = $settings->structure;
     }
 
@@ -64,11 +70,11 @@ new class extends LivewireComponent
             return;
         }
 
-        // Needed to update the menu on the frontend too, not just db
-        $this->menuStructure = $structure;
-
         $settings->structure = $structure;
         $settings->save();
+
+        // Needed to update the menu on the frontend too, not just db
+        $this->menuStructure = $structure;
 
         Notification::make()->title('Menu saved')
             ->success()
@@ -79,7 +85,7 @@ new class extends LivewireComponent
 };
 ?>
 
-<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+<div x-data="menuBuilder" class="grid grid-cols-1 gap-6 lg:grid-cols-3">
     {{-- Left column: Available items --}}
     <div class="lg:col-span-1">
         <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
@@ -118,7 +124,7 @@ new class extends LivewireComponent
                 </div>
                 <button
                     type="button"
-                    @click="$wire.save(walkTree(document.getElementById('menu-root')))"
+                    @click="save()"
                     class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                 >
                     Save Menu
@@ -128,7 +134,7 @@ new class extends LivewireComponent
                 <ul
                     id="menu-root"
                     data-menu-list
-                    class="min-h-20 space-y-2 rounded-lg border-2 border-dashed border-gray-200 p-2 dark:border-gray-700"
+                    class="min-h-20 rounded-lg border-2 border-dashed border-gray-200 p-2 dark:border-gray-700"
                 >
                     @forelse ($menuStructure as $item)
                         <x-page-builder.partials.menu-item :item="$item" :page-titles="$pageTitles" />
@@ -157,6 +163,18 @@ new class extends LivewireComponent
 
 @script
 <script>
+    const MAX_DEPTH = {{ $maxDepth }};
+
+    function getListDepth(ul) {
+        let depth = 0;
+        let el = ul.parentElement;
+        while (el) {
+            if (el.matches('[data-menu-list]')) depth++;
+            el = el.parentElement;
+        }
+        return depth;
+    }
+
     function cloneMenuItem(pageId, pageTitle) {
         const template = document.getElementById('nav-menu-item-template');
         const li = template.content.firstElementChild.cloneNode(true);
@@ -171,7 +189,11 @@ new class extends LivewireComponent
             handle: '.drag-handle',
             animation: 150,
             fallbackOnBody: true,
-            swapThreshold: 0.5,
+            swapThreshold: 0.6,
+            ghostClass: 'menu-drop-indicator',
+            onMove(evt) {
+                return getListDepth(evt.to) < MAX_DEPTH;
+            },
             onAdd(evt) {
                 const draggedItem = evt.item;
 
@@ -209,5 +231,11 @@ new class extends LivewireComponent
     document.addEventListener('livewire:initialized', () => {
         initNestedSortable(document.getElementById('menu-root'));
     });
+
+    Alpine.data('menuBuilder', () => ({
+        save() {
+            $wire.save(walkTree(document.getElementById('menu-root')));
+        },
+    }));
 </script>
 @endscript

@@ -1,6 +1,6 @@
 @props(['item', 'pageTitles'])
 
-<li data-page-id="{{ $item['id'] }}" class="nav-menu-item">
+<li data-page-id="{{ $item['id'] }}" class="nav-menu-item space-y-2.5">
     <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800 dark:ring-white/10">
         <span class="drag-handle cursor-grab text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -21,7 +21,12 @@
             </svg>
         </button>
     </div>
-    <ul class="ml-6 mt-2 space-y-2 min-h-4 bg-red-100 outline outline-2 outline-red-400" data-menu-list>
+
+    {{-- Nesting nook: L-shaped drop zone --}}
+    <ul
+        class="ml-10"
+        data-menu-list
+    >
         @foreach ($item['children'] ?? [] as $child)
             <x-page-builder.partials.menu-item :item="$child" :page-titles="$pageTitles" />
         @endforeach

@@ -13,4 +13,23 @@ return [
         'title' => 'Tlačítko 2',
         'description' => 'Sekundární výzva k akci v hlavičce, modro-tyrkysové tlačítko.',
     ],
+
+    'builder' => [
+        'available_items' => [
+            'title' => 'Dostupné položky',
+            'description' => 'Přetáhněte položky do menu.',
+            'empty' => 'Žádné položky nenalezeny.',
+        ],
+        'menu' => [
+            'title' => 'Navigační menu',
+            'description' => 'Přeuspořádejte a vnořte položky přetažením. Položky vložené do jiných se zobrazí jako rozbalovací podnabídka.',
+            'save' => 'Uložit menu',
+            'empty' => 'Přetáhněte sem položky pro sestavení menu.',
+        ],
+        'notifications' => [
+            'save_failed_title' => 'Uložení selhalo',
+            'save_failed_body' => 'Nalezeno :count neplatných ID: :ids',
+            'saved_title' => 'Menu uloženo',
+        ],
+    ],
 ];

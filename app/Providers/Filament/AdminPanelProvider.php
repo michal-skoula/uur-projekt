@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Enums\AdminPanelNavigation;
 use App\Settings\GeneralSettings;
 use Awcodes\Curator\CuratorPlugin;
 use Awcodes\Curator\Models\Media;
@@ -76,8 +75,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 CuratorPlugin::make()
-                    //todo: add translations for all available setters under lang/pages
-                ,
+                    ->label('Soubor')
+                    ->pluralLabel('Soubory')
+                    ->navigationIcon('heroicon-o-folder'),
                 FilamentSearchSpotlightPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css');

@@ -62,8 +62,11 @@ new class extends LivewireComponent
 
         if ($invalidIds) {
             Notification::make()
-                ->title('Failed to save')
-                ->body('Found' . count($invalidIds) . 'invalid item IDs: ' . implode(', ', $invalidIds))
+                ->title(__('settings/nav-menu.builder.notifications.save_failed_title'))
+                ->body(__('settings/nav-menu.builder.notifications.save_failed_body', [
+                    'count' => count($invalidIds),
+                    'ids' => implode(', ', $invalidIds),
+                ]))
                 ->danger()
                 ->send();
 
@@ -76,7 +79,8 @@ new class extends LivewireComponent
         // Needed to update the menu on the frontend too, not just db
         $this->menuStructure = $structure;
 
-        Notification::make()->title('Menu saved')
+        Notification::make()
+            ->title(__('settings/nav-menu.builder.notifications.saved_title'))
             ->success()
             ->send();
     }
@@ -91,10 +95,10 @@ new class extends LivewireComponent
         <div class="rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
             <div class="px-6 py-4">
                 <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                    Available Items
+                    {{ __('settings/nav-menu.builder.available_items.title') }}
                 </h3>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Drag items into the menu.
+                    {{ __('settings/nav-menu.builder.available_items.description') }}
                 </p>
             </div>
             <div class="space-y-2 px-6 pb-6">
@@ -104,7 +108,7 @@ new class extends LivewireComponent
                 @endforeach
 
                 @if (empty($availableGroups) || collect($availableGroups)->every(fn ($g) => empty($g['items'])))
-                    <p class="py-4 text-center text-sm text-gray-400 dark:text-gray-600">No items found.</p>
+                    <p class="py-4 text-center text-sm text-gray-400 dark:text-gray-600">{{ __('settings/nav-menu.builder.available_items.empty') }}</p>
                 @endif
             </div>
         </div>
@@ -116,10 +120,10 @@ new class extends LivewireComponent
             <div class="flex items-start justify-between px-6 py-4">
                 <div>
                     <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                        Navigation Menu
+                        {{ __('settings/nav-menu.builder.menu.title') }}
                     </h3>
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Reorder and nest items by dragging. Items nested inside others appear as dropdown children.
+                        {{ __('settings/nav-menu.builder.menu.description') }}
                     </p>
                 </div>
                 <button
@@ -127,7 +131,7 @@ new class extends LivewireComponent
                     @click="save()"
                     class="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
                 >
-                    Save Menu
+                    {{ __('settings/nav-menu.builder.menu.save') }}
                 </button>
             </div>
             <div class="px-6 pb-6">
@@ -141,7 +145,7 @@ new class extends LivewireComponent
                     @empty
                         <li class="flex h-16 items-center justify-center text-sm text-gray-400 dark:text-gray-600"
                             data-empty-placeholder>
-                            Drag items here to build your menu.
+                            {{ __('settings/nav-menu.builder.menu.empty') }}
                         </li>
                     @endforelse
                 </ul>

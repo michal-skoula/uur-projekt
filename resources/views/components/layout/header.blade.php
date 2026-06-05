@@ -1,4 +1,5 @@
 @php
+    use App\Filament\Components\LinkInput;
     use App\Models\Page;
     use App\Settings\NavMenuSettings;
 
@@ -7,6 +8,12 @@
 
     $allIds = collect($menuStructure)->map(fn ($item) => $item['id'] ?? null)->filter()->values()->all();
     $pages = Page::whereIn('id', $allIds)->get()->keyBy('id');
+
+    $btnPrimary   = $menuSettings->button_primary;
+    $btnSecondary = $menuSettings->button_secondary;
+
+    $btnPrimaryLink   = LinkInput::resolve($btnPrimary['link'] ?? null);
+    $btnSecondaryLink = LinkInput::resolve($btnSecondary['link'] ?? null);
 @endphp
 
 <header
@@ -53,14 +60,20 @@
             </ul>
 
             {{-- Desktop CTA buttons --}}
-            <div class="nav:flex hidden gap-4">
-                <a href="#" class="btn-primary">
-                    Přihlásit se
-                </a>
-                <a href="mailto:infodcpp@gmail.com" class="btn-secondary">
-                    Mám otázku
-                </a>
-            </div>
+            @if ($btnPrimary || $btnSecondary)
+                <div class="nav:flex hidden gap-4">
+                    @if ($btnPrimary)
+                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}" class="btn-primary">
+                            {{ $btnPrimary['text'] ?? '' }}
+                        </a>
+                    @endif
+                    @if ($btnSecondary)
+                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}" class="btn-secondary">
+                            {{ $btnSecondary['text'] ?? '' }}
+                        </a>
+                    @endif
+                </div>
+            @endif
 
             {{-- Mobile hamburger --}}
             <button
@@ -120,14 +133,20 @@
             </button>
 
             {{-- Mobile CTA buttons --}}
-            <div class="flex gap-2 justify-end">
-                <a href="mailto:infodcpp@gmail.com" class="btn-secondary">
-                    Mám otázku
-                </a>
-                <a href="#" class="btn-primary">
-                    Přihlásit se
-                </a>
-            </div>
+            @if ($btnPrimary || $btnSecondary)
+                <div class="flex gap-2 justify-end">
+                    @if ($btnSecondary)
+                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}" class="btn-secondary">
+                            {{ $btnSecondary['text'] ?? '' }}
+                        </a>
+                    @endif
+                    @if ($btnPrimary)
+                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}" class="btn-primary">
+                            {{ $btnPrimary['text'] ?? '' }}
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
 
         {{-- Mobile nav menu --}}

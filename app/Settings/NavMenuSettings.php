@@ -11,6 +11,16 @@ class NavMenuSettings extends Settings
      */
     public array $structure;
 
+    /**
+     * @phpstan-var array{text?: string, link?: array{type?: string, url?: string|int|null}}|null
+     */
+    public ?array $button_primary;
+
+    /**
+     * @phpstan-var array{text?: string, link?: array{type?: string, url?: string|int|null}}|null
+     */
+    public ?array $button_secondary;
+
     public static function group(): string
     {
         return 'nav_menu';

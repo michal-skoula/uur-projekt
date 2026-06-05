@@ -1,3 +1,18 @@
+<?php
+
+use Livewire\Component as LivewireComponent;
+
+new class extends LivewireComponent
+{
+    public array $group;
+
+    public function mount(array $group): void
+    {
+        $this->group = $group;
+    }
+};
+?>
+
 <div x-data="{ open: true }">
     <button
         type="button"
@@ -5,6 +20,7 @@
         class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
     >
         <span>{{ $group['label'] }}</span>
+        {{-- Chevron Icon --}}
         <svg
             class="h-4 w-4 transition-transform duration-150"
             :class="{ 'rotate-180': open }"
@@ -32,16 +48,10 @@
         class="mt-1 space-y-1"
     >
         @foreach ($group['items'] as $item)
-            <li
-                data-page-id="{{ $item['id'] }}"
-                data-page-title="{{ $item['title'] }}"
-                class="flex cursor-grab select-none items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50 dark:text-gray-300 dark:ring-gray-700 dark:hover:bg-gray-800"
-            >
-                <svg class="h-3.5 w-3.5 shrink-0 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM8 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM8 22a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM16 22a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
-                </svg>
-                {{ $item['title'] }}
-            </li>
+            <livewire:page-builder.partials.collection-item
+                :item-id="$item['id']"
+                :title="$item['title']"
+            />
         @endforeach
     </ul>
 </div>

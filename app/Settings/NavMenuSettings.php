@@ -7,7 +7,7 @@ use Spatie\LaravelSettings\Settings;
 class NavMenuSettings extends Settings
 {
     /**
-     * Shape: id, slug, children
+     * @phpstan-var array<int, array{id: int, children: array<int, mixed>}>
      */
     public array $structure;
 

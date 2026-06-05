@@ -1,4 +1,3 @@
 <x-filament-panels::page>
-{{--    <livewire:nav-menu-builder/>--}}
-    <livewire:menu-builder />
+    <livewire:page-builder.builder />
 </x-filament-panels::page>

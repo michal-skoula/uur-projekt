@@ -21,9 +21,11 @@ class PopupSettingsPage extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;
 
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Megaphone;
+
     protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
-    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Megaphone;
+    protected static ?int $navigationSort = 3;
 
     protected static string $settings = PopupSettings::class;
 

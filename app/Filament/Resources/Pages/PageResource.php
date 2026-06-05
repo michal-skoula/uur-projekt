@@ -24,6 +24,21 @@ class PageResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Website;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('resources/page.navigation_label');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('resources/page.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('resources/page.plural_label');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return PageForm::configure($schema);

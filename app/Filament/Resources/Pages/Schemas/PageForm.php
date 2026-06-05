@@ -17,7 +17,9 @@ class PageForm
                 TextInput::make('title')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('slug'),
+                TextInput::make('slug')
+                    ->unique()
+                    ->placeholder('Root'),
                 Toggle::make('is_published')
                     ->columnSpanFull(),
                 Builder::make('content')

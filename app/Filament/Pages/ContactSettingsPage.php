@@ -21,9 +21,11 @@ class ContactSettingsPage extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
 
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Phone;
+
     protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
-    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Phone;
+    protected static ?int $navigationSort = 2;
 
     protected static string $settings = ContactSettings::class;
 

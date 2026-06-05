@@ -22,9 +22,11 @@ class GeneralSettingsPage extends SettingsPage
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Cog6Tooth;
+
     protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
-    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Cog6Tooth;
+    protected static ?int $navigationSort = 1;
 
     protected static string $settings = GeneralSettings::class;
 

@@ -16,8 +16,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property list<array{type: string, data: array<string, mixed>}> $content
  * @property bool $is_published
  */
-// todo: install laravel-ide-helper and give AI access to it, and add it into the coding pipeline
-
 class Page extends ContentCollectionModel
 {
     use HasFactory, SoftDeletes;

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Components\ButtonInput;
+use App\Filament\Enums\AdminPanelNavigation;
 use App\Settings\PopupSettings;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use BackedEnum;
@@ -14,10 +15,13 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class PopupSettingsPage extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMegaphone;
+
+    protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Megaphone;
 

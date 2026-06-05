@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\CmsPageController;
 use App\Http\Controllers\NewsController;
-use App\Http\Controllers\PageBuilderController;
 use App\Services\SitemapService;
 use Illuminate\Support\Facades\Route;
 

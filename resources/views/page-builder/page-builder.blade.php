@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => $page->title])
+@extends('layouts.website', ['title' => $page->title])
 
 @section('content')
     @foreach ($sections as $section)

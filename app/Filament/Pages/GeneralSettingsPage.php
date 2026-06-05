@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Enums\AdminPanelNavigation;
 use App\Settings\GeneralSettings;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use BackedEnum;
@@ -13,12 +14,15 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class GeneralSettingsPage extends SettingsPage
 {
     use HasGlobalSearch;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
+
+    protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Cog6Tooth;
 

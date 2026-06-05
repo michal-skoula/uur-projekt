@@ -16,6 +16,16 @@ class GeneralSettings extends Settings
 
     public ?string $faviconDark;
 
+    public function getFaviconForDarkMode(): ?string
+    {
+        return $this->faviconLight;
+    }
+
+    public function getFaviconForLightMode(): ?string
+    {
+        return $this->faviconDark;
+    }
+
     public static function group(): string
     {
         return 'general';

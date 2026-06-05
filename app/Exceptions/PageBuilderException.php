@@ -11,6 +11,6 @@ class PageBuilderException extends Exception
      */
     public function report(): void
     {
-        // todo: implement
+        report($this);
     }
 }

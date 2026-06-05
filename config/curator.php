@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 use Awcodes\Curator\Enums\PreviewableExtensions;
 use Awcodes\Curator\Models\Media;
 use Awcodes\Curator\Providers\GlideUrlProvider;

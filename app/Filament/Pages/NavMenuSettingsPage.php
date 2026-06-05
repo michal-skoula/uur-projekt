@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Components\ButtonInput;
+use App\Filament\Enums\AdminPanelNavigation;
 use App\Filament\Widgets\NavMenuBuilderWidget;
 use App\Settings\NavMenuSettings;
 use BackedEnum;
@@ -11,10 +12,13 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class NavMenuSettingsPage extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3;
+
+    protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Website;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Bars3;
 
@@ -53,7 +57,7 @@ class NavMenuSettingsPage extends SettingsPage
         ]);
     }
 
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             NavMenuBuilderWidget::class,

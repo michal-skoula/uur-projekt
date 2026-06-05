@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Components\ButtonInput;
+use App\Filament\Enums\AdminPanelNavigation;
 use App\Settings\ContactSettings;
 use BackedEnum;
 use Filament\Forms\Components\Repeater;
@@ -14,10 +15,13 @@ use Filament\Support\Enums\Alignment;
 use Filament\Support\Icons\Heroicon;
 use Guava\IconPicker\Forms\Components\IconPicker;
 use Illuminate\Contracts\Support\Htmlable;
+use UnitEnum;
 
 class ContactSettingsPage extends SettingsPage
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
+
+    protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Settings;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Phone;
 

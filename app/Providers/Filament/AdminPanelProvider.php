@@ -2,8 +2,10 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\NavMenuSettingsPage;
+use App\Filament\Enums\AdminPanelNavigation;
+use App\Settings\GeneralSettings;
 use Awcodes\Curator\CuratorPlugin;
+use Awcodes\Curator\Models\Media;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,16 +32,25 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName(fn (GeneralSettings $s) => $s->name)
+            ->brandLogo(fn (GeneralSettings $s) => Media::find($s->logo)?->url)
+            ->favicon(fn (GeneralSettings $s) => Media::find($s->getFaviconForDarkMode())?->url)
+            ->brandLogoHeight('5rem')
             ->globalSearch()
+            ->darkMode(isForced: true)
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Yellow,
+                'gray' => Color::Olive,
+                'info' => Color::Blue,
+                'success' => Color::Green,
+                'warning' => Color::Amber,
+                'danger' => Color::Red,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
-                NavMenuSettingsPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -64,7 +75,9 @@ class AdminPanelProvider extends PanelProvider
                 //
             ])
             ->plugins([
-                CuratorPlugin::make(),
+                CuratorPlugin::make()
+                    //todo: add translations for all available setters under lang/pages
+                ,
                 FilamentSearchSpotlightPlugin::make(),
             ])
             ->viteTheme('resources/css/filament/admin/theme.css');

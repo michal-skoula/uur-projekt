@@ -1,16 +1,16 @@
 <?php
 
 return [
-    'navigation_label' => 'Navigační menu',
-    'page_title' => 'Navigační menu',
+    'navigation_label' => 'Navigace',
+    'page_title' => 'Navigace webu',
 
     'button_primary' => [
-        'title' => 'Hlavní tlačítko',
-        'description' => 'Primární výzva k akci zobrazená v hlavní navigaci. Slouží pro nejdůležitější odkaz, například přihlášení nebo registraci.',
+        'title' => 'Tlačítko 1',
+        'description' => 'Primární výzva k akci v hlaviččce, žluto-zelené tlačítko.',
     ],
 
     'button_secondary' => [
-        'title' => 'Vedlejší tlačítko',
-        'description' => 'Sekundární odkaz v hlavní navigaci. Zobrazí se vedle hlavního tlačítka pro méně prioritní akci.',
+        'title' => 'Tlačítko 2',
+        'description' => 'Sekundární výzva k akci v hlavičce, modro-tyrkysové tlačítko.',
     ],
 ];

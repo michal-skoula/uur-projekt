@@ -1,7 +1,6 @@
 <?php
 
-use App\Settings\GeneralSettings;
-use Spatie\LaravelData\Data;
+use App\Settings;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeZoneCast;
@@ -15,7 +14,10 @@ return [
      * put them (manually) here.
      */
     'settings' => [
-        GeneralSettings::class,
+        Settings\GeneralSettings::class,
+        Settings\ContactSettings::class,
+        Settings\NavMenuSettings::class,
+        Settings\PopupSettings::class,
     ],
 
     /*

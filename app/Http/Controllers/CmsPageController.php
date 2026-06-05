@@ -5,40 +5,49 @@ namespace App\Http\Controllers;
 use App\Exceptions\PageBuilderException;
 use App\Helpers\CmsSectionsHelper;
 use App\Models\Page;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\HtmlString;
 
 class CmsPageController extends Controller
 {
-    // todo: fix '/' root file not working
-    public function __invoke(?string $path)
+    public function __invoke(?string $path, ?User $user = null): View
     {
-
-        $user = auth()->user();
-
-        $slugs = explode('/', $path);
         $pages = [];
 
-        foreach ($slugs as $slug) {
-            $page = Page::where('slug', $slug)->first();
+        // Root page
+        if (! $path || $path === '/') {
+            $lastPage = Page::whereNull('slug')->first();
+        }
+        else {
+            $slugs = explode('/', $path);
 
-            if (! $page) {
-                abort(404);
+
+            foreach ($slugs as $slug) {
+                $page = Page::where('slug', $slug)->first();
+
+                if (! $page) {
+                    abort(404);
+                }
+
+                $pages[] = $page;
             }
 
-            $pages[] = $page;
+            $lastPage = last($pages);
         }
 
-        $page = last($pages);
+        if(empty($lastPage)) {
+            abort(404);
+        }
 
-        if (! $user || ! $page->canView($user)) {
+        if (! $lastPage->canView($user)) {
             abort(403);
         }
 
         return view('page-builder.page-builder', [
-            'page' => $page,
+            'page' => $lastPage,
             'breadcrumbs' => $pages,
-            'sections' => $this->renderSections($page),
+            'sections' => $this->renderSections($lastPage),
         ]);
     }
 

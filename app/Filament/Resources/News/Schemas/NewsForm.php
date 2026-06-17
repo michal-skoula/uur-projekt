@@ -7,7 +7,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -16,43 +16,48 @@ class NewsForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
-                Grid::make(2)
-                    ->columnSpanFull()
+                Section::make(__('resources/news.sections.basic.title'))
+                    ->aside()
+                    ->description(__('resources/news.sections.basic.description'))
+                    ->columns(1)
                     ->schema([
                         TextInput::make('title')
-                            ->label('Nadpis')
+                            ->label(__('resources/news.fields.title'))
                             ->required()
                             ->live(onBlur: true)
-                            ->afterStateUpdated(fn (string $operation, string $state, callable $set) => $operation === 'create'
-                                ? $set('slug', Str::slug($state))
+                            ->afterStateUpdated(fn (string $operation, ?string $state, callable $set) => $operation === 'create'
+                                ? $set('slug', Str::slug($state ?? ''))
                                 : null),
-
                         TextInput::make('slug')
-                            ->label('Slug')
+                            ->label(__('resources/news.fields.slug'))
+                            ->helperText(__('resources/news.fields.slug_helper'))
                             ->required()
                             ->unique(ignoreRecord: true),
+                        Textarea::make('excerpt')
+                            ->columnSpanFull()
+                            ->label(__('resources/news.fields.excerpt'))
+                            ->helperText(__('resources/news.fields.excerpt_helper'))
+                            ->rows(3),
+                        CuratorPicker::make('thumbnail')
+                            ->label(__('resources/news.fields.thumbnail'))
+                            ->directory('news'),
                     ]),
-
-                Textarea::make('excerpt')
-                    ->label('Perex')
-                    ->rows(3)
-                    ->columnSpanFull(),
-
+                Section::make(__('resources/news.sections.publishing.title'))
+                    ->aside()
+                    ->description(__('resources/news.sections.publishing.description'))
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('author')
+                            ->label(__('resources/news.fields.author')),
+                        DateTimePicker::make('published_at')
+                            ->label(__('resources/news.fields.published_at'))
+                            ->helperText(__('resources/news.fields.published_at_helper')),
+                    ]),
                 RichEditor::make('content')
-                    ->label('Obsah')
-                    ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'h2', 'h3', 'blockquote'])
-                    ->columnSpanFull(),
-
-                CuratorPicker::make('thumbnail')
-                    ->label('Náhledový obrázek')
-                    ->directory('news'),
-
-                TextInput::make('author')
-                    ->label('Autor'),
-
-                DateTimePicker::make('published_at')
-                    ->label('Datum publikace'),
+                    ->label(__('resources/news.fields.content'))
+                    ->toolbarButtons(['bold', 'italic', 'link', 'bulletList', 'orderedList', 'h2', 'h3', 'blockquote']),
             ]);
     }
 }

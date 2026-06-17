@@ -22,13 +22,26 @@ class NewsResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
 
+    protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Newspaper;
+
     protected static string|UnitEnum|null $navigationGroup = AdminPanelNavigation::Website;
 
-    protected static ?string $navigationLabel = 'Aktuality';
+    protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?string $modelLabel = 'aktualita';
+    public static function getNavigationLabel(): string
+    {
+        return __('resources/news.navigation_label');
+    }
 
-    protected static ?string $pluralModelLabel = 'aktuality';
+    public static function getModelLabel(): string
+    {
+        return __('resources/news.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('resources/news.plural_label');
+    }
 
     public static function form(Schema $schema): Schema
     {

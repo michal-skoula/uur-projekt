@@ -14,6 +14,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Guava\IconPicker\IconPickerPlugin;
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn (GeneralSettings $s) => Media::find($s->logo)?->url)
             ->favicon(fn (GeneralSettings $s) => Media::find($s->getFaviconForDarkMode())?->url)
             ->brandLogoHeight('5rem')
-            ->globalSearch()
+            ->globalSearch(false)
             ->darkMode(isForced: true)
             ->login(CustomLoginPage::class)
             ->colors([
@@ -72,6 +73,10 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->renderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+                fn (): string => view('filament.spotlight-launcher')->render(),
+            )
             ->assets([
                 //
             ])

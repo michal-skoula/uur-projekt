@@ -5,3 +5,4 @@
 @source '../../../../resources/views/**/*';
 @source '../../../../vendor/awcodes/filament-curator/resources/**/*.blade.php';
 @source '../../../../vendor/wezlo/filament-search-spotlight/resources/views/**/*';
+@source '../../../../vendor/guava/filament-icon-picker/resources/**/*';

@@ -37,11 +37,11 @@ new class extends LivewireComponent {
     }
 
     /**
-     * @param array<int, array{id: int, children: array<int, mixed>}> $structure
+     * @param array<int, array{collection: string, id: int, children: array<int, mixed>}> $structure
      */
     public function save(array $structure, NavMenuSettings $settings): void
     {
-        $ids = PageBuilderService::findIds($structure);
+        $ids = PageBuilderService::buildCollectionListsFromTree($structure);
         $validIds = collect();
 
         /** @var array<string, class-string> $collections */
@@ -49,7 +49,8 @@ new class extends LivewireComponent {
         $disabled = config('content-collections.disabled', []);
 
         foreach ($collections as $slug => $class) {
-            if (in_array($slug, $disabled) || !is_a($class, ContentCollectionItem::class, true)) {
+            if (! is_a($class, ContentCollectionItem::class, true)) {
+                Log::warning("Skipping unknown '$slug' ($class) attempted to save in PageBuilder");
                 continue;
             }
 
@@ -166,7 +167,7 @@ new class extends LivewireComponent {
 
 @script
 <script>
-    const MAX_DEPTH = {{ $maxDepth }};
+    const MAX_DEPTH = {{ (int)$maxDepth }};
 
     function getListDepth(ul) {
         let depth = 0;
@@ -187,6 +188,8 @@ new class extends LivewireComponent {
     }
 
     function initNestedSortable(ul) {
+        if (!ul || Sortable.get(ul)) return;
+
         Sortable.create(ul, {
             group: {name: 'nav', pull: true, put: true},
             handle: '.drag-handle',
@@ -230,12 +233,12 @@ new class extends LivewireComponent {
         return result;
     }
 
-    // Note: DOMContentLoaded doesn't work here, pretty sure livewire initializes itself after all DOM content
-    document.addEventListener('livewire:initialized', () => {
-        initNestedSortable(document.getElementById('menu-root'));
-    });
-
     Alpine.data('menuBuilder', () => ({
+        // Alpine runs init() once the component's DOM is ready, on initial load
+        // and after wire:navigate, so #menu-root is guaranteed to exist here.
+        init() {
+            initNestedSortable(this.$el.querySelector('#menu-root'));
+        },
         save() {
             $wire.save(walkTree(document.getElementById('menu-root')));
         },

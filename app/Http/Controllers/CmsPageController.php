@@ -17,11 +17,9 @@ class CmsPageController extends Controller
 
         // Root page
         if (! $path || $path === '/') {
-            $lastPage = Page::whereNull('slug')->first();
-        }
-        else {
+            $lastPage = Page::where('slug', '')->first();
+        } else {
             $slugs = explode('/', $path);
-
 
             foreach ($slugs as $slug) {
                 $page = Page::where('slug', $slug)->first();
@@ -36,7 +34,7 @@ class CmsPageController extends Controller
             $lastPage = last($pages);
         }
 
-        if(empty($lastPage)) {
+        if (empty($lastPage)) {
             abort(404);
         }
 

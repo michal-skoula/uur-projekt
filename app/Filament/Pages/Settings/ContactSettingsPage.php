@@ -57,6 +57,7 @@ class ContactSettingsPage extends SettingsPage
                             IconPicker::make('icon')
                                 ->label(__('settings/contact.social_media.channels.icon'))
                                 ->sets(['fontawesome-brands'])
+                                ->iconsSearchResults()
                                 ->required(),
                             TextInput::make('name')
                                 ->label(__('settings/contact.social_media.channels.name'))

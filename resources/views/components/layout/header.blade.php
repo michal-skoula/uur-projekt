@@ -1,12 +1,13 @@
 @php
     use App\Filament\Components\LinkInput;
     use App\Models\Page;
+    use App\Services\PageBuilderService;
     use App\Settings\NavMenuSettings;
 
     $menuSettings = app(NavMenuSettings::class);
     $menuStructure = $menuSettings->structure ?? [];
 
-    $allIds = collect($menuStructure)->map(fn ($item) => $item['id'] ?? null)->filter()->values()->all();
+    $allIds = PageBuilderService::buildCollectionListsFromTree($menuStructure);
     $pages = Page::whereIn('id', $allIds)->get()->keyBy('id');
 
     $btnPrimary   = $menuSettings->button_primary;
@@ -56,19 +57,21 @@
 
             {{-- Desktop nav menu --}}
             <ul class="dcpp-nav-parent-ul">
-                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="false" />
+                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="false"/>
             </ul>
 
             {{-- Desktop CTA buttons --}}
             @if ($btnPrimary || $btnSecondary)
                 <div class="nav:flex hidden gap-4">
                     @if ($btnPrimary)
-                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}" class="btn-primary">
+                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}"
+                           class="btn-primary">
                             {{ $btnPrimary['text'] ?? '' }}
                         </a>
                     @endif
                     @if ($btnSecondary)
-                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}" class="btn-secondary">
+                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}"
+                           class="btn-secondary">
                             {{ $btnSecondary['text'] ?? '' }}
                         </a>
                     @endif
@@ -83,8 +86,10 @@
                 aria-controls="slideover"
                 aria-label="Otevřít navigaci"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="size-7 text-white">
-                    <path d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"
+                     class="size-7 text-white">
+                    <path
+                        d="M160-240q-17 0-28.5-11.5T120-280q0-17 11.5-28.5T160-320h640q17 0 28.5 11.5T840-280q0 17-11.5 28.5T800-240H160Zm0-200q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520h640q17 0 28.5 11.5T840-480q0 17-11.5 28.5T800-440H160Zm0-200q-17 0-28.5-11.5T120-680q0-17 11.5-28.5T160-720h640q17 0 28.5 11.5T840-680q0 17-11.5 28.5T800-640H160Z"/>
                 </svg>
             </button>
         </div>
@@ -127,8 +132,10 @@
                 aria-label="Zavřít navigaci"
                 aria-controls="slideover"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" class="size-7 text-white">
-                    <path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"
+                     class="size-7 text-white">
+                    <path
+                        d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/>
                 </svg>
             </button>
 
@@ -136,12 +143,14 @@
             @if ($btnPrimary || $btnSecondary)
                 <div class="flex gap-2 justify-end">
                     @if ($btnSecondary)
-                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}" class="btn-secondary">
+                        <a href="{{ $btnSecondaryLink['url'] }}" target="{{ $btnSecondaryLink['target'] }}"
+                           class="btn-secondary">
                             {{ $btnSecondary['text'] ?? '' }}
                         </a>
                     @endif
                     @if ($btnPrimary)
-                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}" class="btn-primary">
+                        <a href="{{ $btnPrimaryLink['url'] }}" target="{{ $btnPrimaryLink['target'] }}"
+                           class="btn-primary">
                             {{ $btnPrimary['text'] ?? '' }}
                         </a>
                     @endif
@@ -152,7 +161,7 @@
         {{-- Mobile nav menu --}}
         <div class="h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <ul class="dcpp-nav-sidebar-parent-menu">
-                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="true" />
+                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="true"/>
             </ul>
         </div>
     </nav>

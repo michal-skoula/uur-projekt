@@ -160,7 +160,7 @@ class WebsiteSeeder extends Seeder
     {
         $home = Page::create([
             'title' => 'Domů',
-            'slug' => null,
+            'slug' => '',
             'is_published' => true,
             'content' => [
                 $this->heroSection($m),
@@ -280,16 +280,16 @@ class WebsiteSeeder extends Seeder
                 'heading' => 'Tanec je vášeň, hudba je rytmus',
                 'motto' => 'Tančit může každý',
                 'dance_styles' => [
-                    ['label' => 'Taneční průprava od 3 let'],
-                    ['label' => 'Jazz Musical'],
-                    ['label' => 'Modern Dance'],
-                    ['label' => 'Street Dance'],
-                    ['label' => 'Pilates'],
-                    ['label' => 'Jazz Dance'],
-                    ['label' => 'Modern Jazz'],
-                    ['label' => 'Akrobacie'],
-                    ['label' => 'Jóga'],
-                    ['label' => 'Jazz pro maminky a tatínky'],
+                    'Taneční průprava od 3 let',
+                    'Jazz Musical',
+                    'Modern Dance',
+                    'Street Dance',
+                    'Pilates',
+                    'Jazz Dance',
+                    'Modern Jazz',
+                    'Akrobacie',
+                    'Jóga',
+                    'Jazz pro maminky a tatínky',
                 ],
                 'text_left' => '<p>Jsme Taneční centrum v Plzni, které v roce 2015 založila choreografka a tanečnice <strong>Petra Parvoničová</strong>. Nabízíme pestré taneční styly pro děti, juniory i dospělé.</p><p>Lekce tance jsou vedeny profesionálními lektory, kteří mají individuální přístup k tanečníkům a vedou je k lásce k tanci a pohybu jako životnímu stylu.</p>',
                 'text_right' => '<p>Centrum pořádá dvakrát ročně vystoupení na <strong>Novém divadle v Plzni</strong>, kde mají naši tanečníci možnost předvést svoji práci publiku.</p><p>Bez ohledu na věk nebo zkušenosti – <strong>u nás může tančit každý!</strong></p>',
@@ -509,12 +509,12 @@ class WebsiteSeeder extends Seeder
     {
         $settings = app(NavMenuSettings::class);
         $settings->structure = [
-            ['id' => $pageIds['home'], 'children' => []],
-            ['id' => $pageIds['about'], 'children' => []],
-            ['id' => $pageIds['pricing'], 'children' => []],
-            ['id' => $pageIds['news'], 'children' => []],
-            ['id' => $pageIds['contact'], 'children' => []],
-            ['id' => $pageIds['schedule'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['home'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['about'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['pricing'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['news'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['contact'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['schedule'], 'children' => []],
         ];
         $settings->button_primary = [
             'text' => 'Přihláška',

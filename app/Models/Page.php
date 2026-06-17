@@ -3,21 +3,24 @@
 namespace App\Models;
 
 use App\Contracts\ContentCollectionModel;
+use Database\Factories\PageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
  * @property ?int $parent_id
  * @property string $title
- * @property ?string $slug
+ * @property string $slug
  * @property list<array{type: string, data: array<string, mixed>}> $content
  * @property bool $is_published
  */
 class Page extends ContentCollectionModel
 {
+    /** @use HasFactory<PageFactory> */
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
@@ -38,11 +41,13 @@ class Page extends ContentCollectionModel
         ];
     }
 
+    /** @return BelongsTo<Page, $this> */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /** @return HasMany<Page, $this> */
     public function children(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
@@ -70,7 +75,30 @@ class Page extends ContentCollectionModel
 
     public function getPermalink(): string
     {
-        // todo: add observer to calculate this
-        return 'WORK_IN_PROGRESS';
+        return '/'.$this->getPathSegments()->implode('/');
+    }
+
+    public function getAbsoluteUrl(): string
+    {
+        return url($this->getPermalink());
+    }
+
+    /**
+     * Builds the slug path by walking up the parent chain. Empty slugs
+     * (the homepage) contribute no segment.
+     *
+     * @return Collection<int, string>
+     */
+    private function getPathSegments(): Collection
+    {
+        $segments = collect();
+
+        for ($page = $this; $page !== null; $page = $page->parent) {
+            if ($page->slug !== '') {
+                $segments->prepend($page->slug);
+            }
+        }
+
+        return $segments;
     }
 }

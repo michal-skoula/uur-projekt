@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Pages\Tables;
 
+use App\Models\Page;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class PagesTable
@@ -16,24 +19,28 @@ class PagesTable
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->label(__('resources/page.fields.title'))
+                    ->prefix(fn (Page $record): string => $record->slug === '' ? __('resources/page.home_prefix') : '')
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->label(__('resources/page.fields.url'))
+                    ->color('gray')
+                    ->formatStateUsing(fn (Page $record): string => $record->getPermalink())
+                    ->default('/')
                     ->searchable(),
-                IconColumn::make('is_published')
-                    ->boolean(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ToggleColumn::make('is_published')
+                    ->label(__('resources/page.fields.is_published')),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
+                Action::make('view-live-site')
+                    ->label(__('resources/page.actions.visit'))
+                    ->color('gray')
+                    ->icon(Heroicon::ArrowUpRight)
+                    ->url(fn (Page $record): string => $record->getAbsoluteUrl())
+                    ->openUrlInNewTab(),
                 EditAction::make(),
             ])
             ->toolbarActions([

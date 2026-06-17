@@ -54,7 +54,7 @@ final class DanceSectionSchema implements SectionSchema
                         ->simple(
                             TextInput::make('label')
                                 ->label(__('sections/dance.style_label'))
-                                ->required(),
+                                ->required()
                         )
                         ->reorderable()
                         ->columnSpanFull(),

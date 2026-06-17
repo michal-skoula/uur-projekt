@@ -87,7 +87,7 @@ describe('findIds', function (): void {
             ['id' => 3, 'children' => []],
         ];
 
-        expect(PageBuilderService::findIds($items))->toBe([1, 2, 3]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3]);
     });
 
     it('returns ids from a nested tree', function (): void {
@@ -99,7 +99,7 @@ describe('findIds', function (): void {
             ]],
         ];
 
-        expect(PageBuilderService::findIds($items))->toBe([1, 2, 3]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3]);
     });
 
     it('collects ids from multiple branches', function (): void {
@@ -113,16 +113,16 @@ describe('findIds', function (): void {
             ]],
         ];
 
-        expect(PageBuilderService::findIds($items))->toBe([1, 2, 3, 4, 5]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3, 4, 5]);
     });
 
     it('returns an empty array for empty input', function (): void {
-        expect(PageBuilderService::findIds([]))->toBe([]);
+        expect(PageBuilderService::buildCollectionListsFromTree([]))->toBe([]);
     });
 
     it('casts ids to int', function (): void {
         $items = [['id' => '7', 'children' => []]];
 
-        expect(PageBuilderService::findIds($items))->toBe([7]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([7]);
     });
 });

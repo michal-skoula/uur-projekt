@@ -8,7 +8,7 @@
             <div class="sm:flex sm:flex-wrap sm:justify-center max-sm:grid xs:grid-cols-2 grid-cols-1 gap-3 items-center mb-16">
                 @foreach ($danceStyles as $style)
                     <p class="px-4 py-3 text-center rounded-3xl bg-primary-dark text-white!">
-                        {{ $style['label'] }}
+                        {{ $style }}
                     </p>
                 @endforeach
             </div>

@@ -23,7 +23,12 @@ final class PageBuilderService
         $disabled = config('content-collections.disabled', []);
 
         foreach ($collections as $slug => $class) {
-            if (in_array($slug, $disabled) || !is_a($class, ContentCollectionItem::class, true)) {
+            if(in_array($slug, $disabled)) {
+                continue;
+            }
+
+            if (! is_a($class, ContentCollectionItem::class, true)) {
+                \Log::warning('Registered ContentCollection does not extend the right model:' . $class);
                 continue;
             }
 
@@ -49,21 +54,24 @@ final class PageBuilderService
     /**
      * Recursively walks a tree of items and returns the IDs found.
      *
-     * @param array<int, array{id: int, children: array<int, mixed>}> $items
-     * @return list<int>
+     * @param array<int, array{collection: string, id: int, children: array<int, mixed>}> $items
+     * @return array<string, array<int>>
      */
-    public static function findIds(array $items): array
+    public static function buildCollectionListsFromTree(array $items): array
     {
-        $ids = [];
+        $collections = [];
 
         foreach ($items as $item) {
-            $ids[] = (int)$item['id'];
+            $id = (int)$item['id'];
+            $coll = (string)$item['collection'];
+
+            $collections[$coll][] = $id;
 
             if (!empty($item['children'])) {
-                array_push($ids, ...self::findIds($item['children']));
+                array_merge($collections, ...self::buildCollectionListsFromTree($item['children']));
             }
         }
 
-        return $ids;
+        return $collections;
     }
 }

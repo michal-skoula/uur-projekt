@@ -9,7 +9,7 @@ class ContactSettings extends Settings
     /** @phpstan-var array<int, array{icon: string, name: string, url: string}> */
     public array $socials = [];
 
-    /** @phpstan-var array<int, array{heading: string, items: array<int, array{title: string, url: string}>}> */
+    /** @phpstan-var array<int, array{heading: string, items: array<int, array{item: array{text: string, link: array{type: string, url: string|int|null}}}>}> */
     public array $footerNav = [];
 
     /** @phpstan-var array{text?: string, link?: array{type?: string, url?: string}} */

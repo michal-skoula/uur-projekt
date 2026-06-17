@@ -66,12 +66,16 @@
                         <div class="flex flex-col items-center gap-6">
                             @foreach ($timetables as $i => $timetable)
                                 <div class="w-full" x-show="selected === {{ $i }}">
-                                    @if ($timetable['imgUrl'])
+                                    @if ($timetable['img'])
                                         <img
-                                            src="{{ $timetable['imgUrl'] }}"
-                                            alt="{{ $timetable['name'] }}"
-                                            class="w-full max-w-2xl mx-auto rounded-lg object-fit"
+                                            src="{{ $timetable['img']->large_url }}"
+                                            srcset="{{ $timetable['img']->medium_url }} 640w, {{ $timetable['img']->large_url }} 1024w"
+                                            sizes="(min-width: 768px) 672px, 100vw"
+                                            alt="{{ $timetable['img']->alt ?? $timetable['name'] }}"
+                                            width="{{ $timetable['img']->width }}"
+                                            height="{{ $timetable['img']->height }}"
                                             loading="lazy"
+                                            class="w-full max-w-2xl mx-auto rounded-lg"
                                         >
                                     @else
                                         <p class="text-gray">Chybí obrázek rozvrhu</p>

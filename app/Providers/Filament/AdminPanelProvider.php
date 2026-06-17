@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\CustomLoginPage;
 use App\Settings\GeneralSettings;
 use Awcodes\Curator\CuratorPlugin;
 use Awcodes\Curator\Models\Media;
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('5rem')
             ->globalSearch()
             ->darkMode(isForced: true)
-            ->login()
+            ->login(CustomLoginPage::class)
             ->colors([
                 'primary' => Color::Yellow,
                 'gray' => Color::Olive,

@@ -4,6 +4,7 @@ namespace App\View\PageBuilder\Sections;
 
 use App\Contracts\SectionTemplate;
 use App\Filament\Components\LinkInput;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Contracts\View\View;
 
 final class HeroSectionTemplate implements SectionTemplate
@@ -12,9 +13,9 @@ final class HeroSectionTemplate implements SectionTemplate
 
     public string $description = '';
 
-    public ?string $backgroundImg = null;
+    public ?Media $backgroundImg = null;
 
-    public ?string $backgroundVideo = null;
+    public ?Media $backgroundVideo = null;
 
     public ?string $bubble = null;
 
@@ -28,8 +29,12 @@ final class HeroSectionTemplate implements SectionTemplate
     {
         $this->title = $data['title'] ?? '';
         $this->description = $data['description'] ?? '';
-        $this->backgroundImg = $data['background']['img'] ?? null;
-        $this->backgroundVideo = $data['background']['video'] ?? null;
+        $this->backgroundImg = isset($data['background']['img']) && $data['background']['img']
+            ? Media::query()->where('id', $data['background']['img'])->first()
+            : null;
+        $this->backgroundVideo = isset($data['background']['video']) && $data['background']['video']
+            ? Media::query()->where('id', $data['background']['video'])->first()
+            : null;
         $this->bubble = $data['bubble'] ?? null;
 
         $primaryLink = LinkInput::resolve($data['button_primary']['link'] ?? null);

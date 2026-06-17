@@ -73,12 +73,6 @@ class CmsPageController extends Controller
                 continue;
             }
 
-            if (! is_array($data)) {
-                report(new PageBuilderException("Malformed data for section {$slug} found on page {$page->title}"));
-
-                continue;
-            }
-
             if ($sectionsHelper::isDisabled($slug)) {
                 continue;
             }
@@ -86,6 +80,7 @@ class CmsPageController extends Controller
             try {
                 $rendered[] = $sectionsHelper::renderSection($slug, $data);
             } catch (\Exception $e) {
+                \Log::error($e->getMessage(), $e->getTrace());
                 report($e);
             }
         }

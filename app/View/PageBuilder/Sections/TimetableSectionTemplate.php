@@ -4,6 +4,7 @@ namespace App\View\PageBuilder\Sections;
 
 use App\Contracts\SectionTemplate;
 use App\Filament\Components\LinkInput;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,7 +19,7 @@ final class TimetableSectionTemplate implements SectionTemplate
     /** @var array{title: string, detail: string} */
     public array $timetableSelector = ['title' => '', 'detail' => ''];
 
-    /** @var array<int, array{name: string, imgUrl: string|null, pdfUrl: string|null}> */
+    /** @var array<int, array{name: string, img: Media|null, pdfUrl: string|null}> */
     public array $timetables = [];
 
     public function prepareData(array $data): static
@@ -47,7 +48,7 @@ final class TimetableSectionTemplate implements SectionTemplate
         $this->timetables = array_values(array_map(
             fn (array $t): array => [
                 'name' => $t['name'] ?? '',
-                'imgUrl' => isset($t['img']) && $t['img'] ? Storage::url($t['img']) : null,
+                'img' => isset($t['img']) && $t['img'] ? Media::query()->where('id', $t['img'])->first() : null,
                 'pdfUrl' => isset($t['pdf']) && $t['pdf'] ? Storage::url($t['pdf']) : null,
             ],
             $data['timetable_selector']['timetables'] ?? []

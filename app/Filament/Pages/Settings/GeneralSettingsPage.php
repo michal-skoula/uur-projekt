@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Pages\Settings;
 
 use App\Filament\Enums\AdminPanelNavigation;
 use App\Settings\GeneralSettings;

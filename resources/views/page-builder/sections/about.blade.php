@@ -32,13 +32,15 @@
         @if ($gallery)
             <div class="relative">
                 <div class="grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5">
-                    @foreach ($gallery as $path)
+                    @foreach ($gallery as $mediaItem)
                         <img
-                            src="{{ Storage::url($path) }}"
-                            alt=""
+                            src="{{ $mediaItem->medium_url }}"
+                            srcset="{{ $mediaItem->thumbnail_url }} 200w, {{ $mediaItem->medium_url }} 640w"
+                            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                            alt="{{ $mediaItem->alt ?? '' }}"
                             loading="lazy"
                             class="h-full w-full aspect-square rounded-lg object-cover"
-                        />
+                        >
                     @endforeach
                 </div>
 

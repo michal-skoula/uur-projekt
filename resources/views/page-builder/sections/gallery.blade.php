@@ -34,7 +34,7 @@
         {{-- Grid --}}
         @if ($gallery)
             <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-                @foreach ($galleryUrls as $i => $url)
+                @foreach ($gallery as $i => $mediaItem)
                     <button
                         type="button"
                         class="relative rounded-lg overflow-clip cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-yellow"
@@ -42,8 +42,10 @@
                         :aria-label="'Zobrazit fotografii {{ $i + 1 }}'"
                     >
                         <img
-                            src="{{ $url }}"
-                            alt=""
+                            src="{{ $mediaItem->medium_url }}"
+                            srcset="{{ $mediaItem->thumbnail_url }} 200w, {{ $mediaItem->medium_url }} 640w"
+                            sizes="(min-width: 640px) 250px, 100vw"
+                            alt="{{ $mediaItem->alt ?? '' }}"
                             loading="lazy"
                             class="h-full w-full object-cover aspect-square"
                         >

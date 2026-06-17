@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\News\Tables;
 
+use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -15,10 +15,9 @@ class NewsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')
-                    ->label('')
-                    ->imageWidth(64)
-                    ->imageHeight(40)
+                CuratorColumn::make('thumbnail')
+                    ->label('Náhled')
+                    ->imageSize(96)
                     ->defaultImageUrl(null),
 
                 TextColumn::make('title')

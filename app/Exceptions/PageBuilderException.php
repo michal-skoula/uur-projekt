@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class PageBuilderException extends Exception
 {
@@ -11,6 +12,6 @@ class PageBuilderException extends Exception
      */
     public function report(): void
     {
-        report($this);
+        Log::error($this->getMessage(), $this->getTrace());
     }
 }

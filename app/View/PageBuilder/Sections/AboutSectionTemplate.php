@@ -4,6 +4,7 @@ namespace App\View\PageBuilder\Sections;
 
 use App\Contracts\SectionTemplate;
 use App\Filament\Components\LinkInput;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Contracts\View\View;
 
 final class AboutSectionTemplate implements SectionTemplate
@@ -22,7 +23,7 @@ final class AboutSectionTemplate implements SectionTemplate
     /** @var array{text: string, url: string, target: string} */
     public array $buttonSecondary = ['text' => '', 'url' => '#', 'target' => '_self'];
 
-    /** @var string[] */
+    /** @var list<Media> */
     public array $gallery = [];
 
     public function prepareData(array $data): static
@@ -31,7 +32,17 @@ final class AboutSectionTemplate implements SectionTemplate
         $this->title = $data['title'] ?? '';
         $this->description = $data['description'] ?? '';
         $this->bubble = $data['bubble'] ?? null;
-        $this->gallery = $data['gallery'] ?? [];
+
+        $mediaIds = $data['gallery'] ?? [];
+        $mediaById = Media::whereIn('id', $mediaIds)->get()->keyBy('id');
+        $gallery = [];
+        foreach ($mediaIds as $id) {
+            $media = $mediaById->get($id);
+            if ($media instanceof Media) {
+                $gallery[] = $media;
+            }
+        }
+        $this->gallery = $gallery;
 
         $primaryLink = LinkInput::resolve($data['button_primary']['link'] ?? null);
         $this->buttonPrimary = [

@@ -4,8 +4,8 @@ namespace App\View\PageBuilder\Sections;
 
 use App\Contracts\SectionTemplate;
 use App\Models\News;
+use Awcodes\Curator\Models\Media;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Storage;
 
 final class NewsSectionTemplate implements SectionTemplate
 {
@@ -15,7 +15,7 @@ final class NewsSectionTemplate implements SectionTemplate
 
     public string $buttonText = '';
 
-    /** @var array<int, array{title: string, slug: string, excerpt: string, thumbnail: string|null, author: string, date: string}> */
+    /** @var array<int, array{title: string, slug: string, excerpt: string, thumbnail: Media|null, author: string, date: string}> */
     public array $posts = [];
 
     public function prepareData(array $data): static
@@ -34,7 +34,7 @@ final class NewsSectionTemplate implements SectionTemplate
                 'title' => $news->title,
                 'slug' => $news->slug,
                 'excerpt' => $news->excerpt ?? '',
-                'thumbnail' => $news->thumbnail ? Storage::url($news->thumbnail) : null,
+                'thumbnail' => $news->thumbnail ? Media::query()->where('id', (int) $news->thumbnail)->first() : null,
                 'author' => $news->author ?? '',
                 'date' => $news->published_at?->format('d.m.Y') ?? '',
             ])

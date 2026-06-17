@@ -1,14 +1,13 @@
 <?php
 
-use App\Concerns\ContentCollectionItem;
-use App\Concerns\ContentCollectionModel;
+use App\Contracts\ContentCollectionItem;
+use App\Contracts\ContentCollectionModel;
 use App\Services\PageBuilderService;
 use App\Settings\NavMenuSettings;
 use Filament\Notifications\Notification;
 use Livewire\Component as LivewireComponent;
 
-new class extends LivewireComponent
-{
+new class extends LivewireComponent {
     /**
      * @var array<int, array{label: string, items: array<int, array{id: int, title: string}>}>
      */
@@ -141,7 +140,7 @@ new class extends LivewireComponent
                     class="min-h-20 rounded-lg border-2 border-dashed border-gray-200 p-2 dark:border-gray-700"
                 >
                     @forelse ($menuStructure as $item)
-                        <x-page-builder.partials.menu-item :item="$item" :page-titles="$pageTitles" />
+                        <x-page-builder.partials.menu-item :item="$item" :page-titles="$pageTitles"/>
                     @empty
                         <li class="flex h-16 items-center justify-center text-sm text-gray-400 dark:text-gray-600"
                             data-empty-placeholder>
@@ -156,7 +155,7 @@ new class extends LivewireComponent
 
     {{-- Blade markup needs to render server side, this pre-renders it to be injected via JS when building the menu --}}
     <template id="nav-menu-item-template">
-        <x-page-builder.partials.menu-item :item="['id' => 0, 'children' => []]" :page-titles="[0 => '']" />
+        <x-page-builder.partials.menu-item :item="['id' => 0, 'children' => []]" :page-titles="[0 => '']"/>
     </template>
 </div>
 

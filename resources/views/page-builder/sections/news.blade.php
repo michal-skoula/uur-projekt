@@ -17,10 +17,12 @@
                         <a href="{{ route('news.show', $post['slug']) }}" tabindex="-1" class="block w-full aspect-[16/10] overflow-clip bg-white">
                             @if ($post['thumbnail'])
                                 <img
+                                    src="{{ $post['thumbnail']->medium_url }}"
+                                    srcset="{{ $post['thumbnail']->thumbnail_url }} 200w, {{ $post['thumbnail']->medium_url }} 640w"
+                                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                                    alt="{{ $post['thumbnail']->alt ?? $post['title'] }}"
                                     loading="lazy"
-                                    src="{{ $post['thumbnail'] }}"
                                     class="h-full w-full object-contain hover:scale-110 transition-all ease-in-out duration-300"
-                                    alt="{{ $post['title'] }}"
                                 >
                             @else
                                 <div class="h-full w-full bg-primary-dark"></div>

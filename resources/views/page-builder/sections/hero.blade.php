@@ -12,17 +12,21 @@
                         loop
                         playsinline
                         tabindex="-1"
-                        @if ($backgroundImg)poster="{{ Storage::url($backgroundImg) }}"@endif
+                        @if ($backgroundImg) poster="{{ $backgroundImg->url }}" @endif
                         class="w-full h-full object-cover"
                     >
-                        <source src="{{ Storage::url($backgroundVideo) }}">
+                        <source src="{{ $backgroundVideo->url }}">
                     </video>
                 @elseif ($backgroundImg)
                     <img
                         fetchpriority="high"
                         loading="eager"
-                        src="{{ Storage::url($backgroundImg) }}"
-                        alt=""
+                        src="{{ $backgroundImg->url }}"
+                        srcset="{{ $backgroundImg->medium_url }} 640w, {{ $backgroundImg->large_url }} 1024w, {{ $backgroundImg->url }} 1920w"
+                        sizes="100vw"
+                        alt="{{ $backgroundImg->alt ?? '' }}"
+                        width="{{ $backgroundImg->width }}"
+                        height="{{ $backgroundImg->height }}"
                         class="w-full h-full object-cover"
                     >
                 @endif

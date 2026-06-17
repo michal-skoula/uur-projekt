@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Concerns\ContentCollectionItem;
-use App\Concerns\ContentCollectionModel;
+use App\Contracts\ContentCollectionItem;
+use App\Contracts\ContentCollectionModel;
 
 final class PageBuilderService
 {

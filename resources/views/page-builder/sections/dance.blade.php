@@ -1,5 +1,5 @@
 <section id="dance" class="section bg-white text-primary-darker">
-    <div class="max-w-screen-lg mx-auto">
+    <div class="max-w-5xl mx-auto">
 
         <h2 class="mb-6 text-center text-primary-darkest">{{ $heading }}</h2>
 
@@ -8,7 +8,7 @@
             <div class="sm:flex sm:flex-wrap sm:justify-center max-sm:grid xs:grid-cols-2 grid-cols-1 gap-3 items-center mb-16">
                 @foreach ($danceStyles as $style)
                     <p class="px-4 py-3 text-center rounded-3xl bg-primary-dark text-white!">
-                        {{ $style }}
+                        {{ $style['label'] }}
                     </p>
                 @endforeach
             </div>

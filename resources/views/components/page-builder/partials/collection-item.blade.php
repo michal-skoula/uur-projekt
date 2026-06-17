@@ -4,12 +4,14 @@ use Livewire\Component as LivewireComponent;
 
 new class extends LivewireComponent
 {
+    public string $collection;
     public int $itemId;
     public string $title;
 
-    public function mount(int $itemId, string $title): void
+    public function mount(string $collection, int $itemId, string $title): void
     {
-        $this->id = $itemId;
+        $this->collection = $collection;
+        $this->itemId = $itemId;
         $this->title = $title;
     }
 };
@@ -17,6 +19,7 @@ new class extends LivewireComponent
 ?>
 
 <li
+    data-collection="{{ $collection }}"
     data-page-id="{{ $itemId }}"
     data-page-title="{{ $title }}"
     class="flex cursor-grab select-none items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 ring-1 ring-gray-200 hover:bg-gray-50 dark:text-gray-300 dark:ring-gray-700 dark:hover:bg-gray-800"

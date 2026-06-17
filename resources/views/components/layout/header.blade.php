@@ -1,14 +1,21 @@
 @php
+    use App\Contracts\ContentCollectionModel;
     use App\Filament\Components\LinkInput;
-    use App\Models\Page;
     use App\Services\PageBuilderService;
     use App\Settings\NavMenuSettings;
 
     $menuSettings = app(NavMenuSettings::class);
     $menuStructure = $menuSettings->structure ?? [];
 
-    $allIds = PageBuilderService::buildCollectionListsFromTree($menuStructure);
-    $pages = Page::whereIn('id', $allIds)->get()->keyBy('id');
+    // Resolve every referenced item, grouped by collection slug => [id => model].
+    $collectionClasses = config('content-collections.collections', []);
+    $resolved = [];
+    foreach (PageBuilderService::buildCollectionListsFromTree($menuStructure) as $slug => $ids) {
+        $class = $collectionClasses[$slug] ?? null;
+        if (is_a($class, ContentCollectionModel::class, true)) {
+            $resolved[$slug] = $class::whereIn('id', $ids)->get()->keyBy('id');
+        }
+    }
 
     $btnPrimary   = $menuSettings->button_primary;
     $btnSecondary = $menuSettings->button_secondary;
@@ -57,7 +64,7 @@
 
             {{-- Desktop nav menu --}}
             <ul class="dcpp-nav-parent-ul">
-                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="false"/>
+                <x-layout.menu-items :items="$menuStructure" :resolved="$resolved" :mobile="false"/>
             </ul>
 
             {{-- Desktop CTA buttons --}}
@@ -161,7 +168,7 @@
         {{-- Mobile nav menu --}}
         <div class="h-full overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <ul class="dcpp-nav-sidebar-parent-menu">
-                <x-layout.menu-items :items="$menuStructure" :pages="$pages" :mobile="true"/>
+                <x-layout.menu-items :items="$menuStructure" :resolved="$resolved" :mobile="true"/>
             </ul>
         </div>
     </nav>

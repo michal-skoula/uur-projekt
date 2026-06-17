@@ -49,6 +49,7 @@ new class extends LivewireComponent
     >
         @foreach ($group['items'] as $item)
             <livewire:page-builder.partials.collection-item
+                :collection="$item['collection']"
                 :item-id="$item['id']"
                 :title="$item['title']"
             />

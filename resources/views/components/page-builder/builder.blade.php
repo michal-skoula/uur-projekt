@@ -5,6 +5,7 @@ use App\Contracts\ContentCollectionModel;
 use App\Services\PageBuilderService;
 use App\Settings\NavMenuSettings;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component as LivewireComponent;
 
 new class extends LivewireComponent {
@@ -14,12 +15,12 @@ new class extends LivewireComponent {
     public array $availableGroups = [];
 
     /**
-     * @var array<int, array{id: int, children: array<int, mixed>}>
+     * @var array<int, array{collection: string, id: int, children: array<int, mixed>}>
      */
     public array $menuStructure = [];
 
     /**
-     * @var array<int, string>
+     * @var array<string, string> Keyed by "{collection}:{id}".
      */
     public array $pageTitles = [];
 
@@ -41,24 +42,28 @@ new class extends LivewireComponent {
      */
     public function save(array $structure, NavMenuSettings $settings): void
     {
-        $ids = PageBuilderService::buildCollectionListsFromTree($structure);
-        $validIds = collect();
+        $lists = PageBuilderService::buildCollectionListsFromTree($structure);
 
         /** @var array<string, class-string> $collections */
         $collections = config('content-collections.collections', []);
         $disabled = config('content-collections.disabled', []);
 
-        foreach ($collections as $slug => $class) {
-            if (! is_a($class, ContentCollectionItem::class, true)) {
-                Log::warning("Skipping unknown '$slug' ($class) attempted to save in PageBuilder");
+        $invalidIds = [];
+
+        foreach ($lists as $slug => $ids) {
+            $class = $collections[$slug] ?? null;
+
+            if (in_array($slug, $disabled, true) || ! is_a($class, ContentCollectionItem::class, true)) {
+                Log::warning("Skipping unknown or disabled collection '$slug' attempted to save in PageBuilder");
+                $invalidIds = array_merge($invalidIds, $ids);
+
                 continue;
             }
 
             /** @var class-string<ContentCollectionModel> $class */
-            $validIds = $validIds->merge($class::whereIn('id', $ids)->pluck('id'));
+            $foundIds = $class::whereIn('id', $ids)->pluck('id')->all();
+            $invalidIds = array_merge($invalidIds, array_diff($ids, $foundIds));
         }
-
-        $invalidIds = array_diff($ids, $validIds->all());
 
         if ($invalidIds) {
             Notification::make()
@@ -156,7 +161,7 @@ new class extends LivewireComponent {
 
     {{-- Blade markup needs to render server side, this pre-renders it to be injected via JS when building the menu --}}
     <template id="nav-menu-item-template">
-        <x-page-builder.partials.menu-item :item="['id' => 0, 'children' => []]" :page-titles="[0 => '']"/>
+        <x-page-builder.partials.menu-item :item="['collection' => '', 'id' => 0, 'children' => []]" :page-titles="[]"/>
     </template>
 </div>
 
@@ -179,9 +184,10 @@ new class extends LivewireComponent {
         return depth;
     }
 
-    function cloneMenuItem(pageId, pageTitle) {
+    function cloneMenuItem(collection, pageId, pageTitle) {
         const template = document.getElementById('nav-menu-item-template');
         const li = template.content.firstElementChild.cloneNode(true);
+        li.dataset.collection = collection;
         li.dataset.pageId = pageId;
         li.querySelector('[data-item-title]').textContent = pageTitle;
         return li;
@@ -205,7 +211,7 @@ new class extends LivewireComponent {
 
                 // checking whether the dragged object came from the left column (pageTitle is left-column specific)
                 if (draggedItem.dataset.pageTitle !== undefined) {
-                    const newLi = cloneMenuItem(draggedItem.dataset.pageId, draggedItem.dataset.pageTitle);
+                    const newLi = cloneMenuItem(draggedItem.dataset.collection, draggedItem.dataset.pageId, draggedItem.dataset.pageTitle);
                     draggedItem.replaceWith(newLi);
                     const childList = newLi.querySelector('[data-menu-list]');
                     if (childList) initNestedSortable(childList);
@@ -226,9 +232,10 @@ new class extends LivewireComponent {
     function walkTree(ul) {
         const result = [];
         ul.querySelectorAll(':scope > li[data-page-id]').forEach(li => {
+            const collection = li.dataset.collection;
             const id = parseInt(li.dataset.pageId, 10);
             const childUl = li.querySelector(':scope > [data-menu-list]');
-            result.push({id, children: childUl ? walkTree(childUl) : []});
+            result.push({collection, id, children: childUl ? walkTree(childUl) : []});
         });
         return result;
     }

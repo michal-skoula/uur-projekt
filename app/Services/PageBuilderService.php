@@ -10,9 +10,8 @@ final class PageBuilderService
     /**
      * Builds a list of content collections and their items.
      *
-     * @param array<int, string> $savePageTitlesTo
-     *
-     * @return array<int, array{label: string, items: array<int, array{id: int, title: string}>}>
+     * @param  array<string, string>  $savePageTitlesTo  Keyed by "{collection}:{id}".
+     * @return array<int, array{label: string, slug: string, items: array<int, array{collection: string, id: int, title: string}>}>
      */
     public static function buildAvailableGroups(array &$savePageTitlesTo): array
     {
@@ -23,12 +22,13 @@ final class PageBuilderService
         $disabled = config('content-collections.disabled', []);
 
         foreach ($collections as $slug => $class) {
-            if(in_array($slug, $disabled)) {
+            if (in_array($slug, $disabled)) {
                 continue;
             }
 
             if (! is_a($class, ContentCollectionItem::class, true)) {
-                \Log::warning('Registered ContentCollection does not extend the right model:' . $class);
+                \Log::warning('Registered ContentCollection does not extend the right model:'.$class);
+
                 continue;
             }
 
@@ -36,12 +36,14 @@ final class PageBuilderService
             $items = $class::all();
 
             foreach ($items as $item) {
-                $savePageTitlesTo[$item->getIdentifier()] = $item->getName();
+                $savePageTitlesTo[$slug.':'.$item->getIdentifier()] = $item->getName();
             }
 
             $groups[] = [
                 'label' => ucfirst($slug),
-                'items' => $items->map(fn(ContentCollectionModel $item): array => [
+                'slug' => $slug,
+                'items' => $items->map(fn (ContentCollectionModel $item): array => [
+                    'collection' => $slug,
                     'id' => $item->getIdentifier(),
                     'title' => $item->getName(),
                 ])->values()->all(),
@@ -52,23 +54,22 @@ final class PageBuilderService
     }
 
     /**
-     * Recursively walks a tree of items and returns the IDs found.
+     * Recursively walks a tree of items and groups the IDs found by collection slug.
      *
-     * @param array<int, array{collection: string, id: int, children: array<int, mixed>}> $items
-     * @return array<string, array<int>>
+     * @param  array<int, array{collection: string, id: int, children: array<int, mixed>}>  $items
+     * @return array<string, array<int, int>>
      */
     public static function buildCollectionListsFromTree(array $items): array
     {
         $collections = [];
 
         foreach ($items as $item) {
-            $id = (int)$item['id'];
-            $coll = (string)$item['collection'];
+            $collections[(string) $item['collection']][] = (int) $item['id'];
 
-            $collections[$coll][] = $id;
-
-            if (!empty($item['children'])) {
-                array_merge($collections, ...self::buildCollectionListsFromTree($item['children']));
+            if (! empty($item['children'])) {
+                foreach (self::buildCollectionListsFromTree($item['children']) as $slug => $ids) {
+                    $collections[$slug] = array_merge($collections[$slug] ?? [], $ids);
+                }
             }
         }
 

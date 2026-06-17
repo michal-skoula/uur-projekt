@@ -1,6 +1,6 @@
 @props(['item', 'pageTitles'])
 
-<li data-page-id="{{ $item['id'] }}" class="nav-menu-item space-y-2.5">
+<li data-collection="{{ $item['collection'] ?? '' }}" data-page-id="{{ $item['id'] }}" class="nav-menu-item space-y-2.5">
     <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-800 dark:ring-white/10">
         <span class="drag-handle cursor-grab text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -8,7 +8,7 @@
             </svg>
         </span>
         <span class="flex-1 text-sm font-medium text-gray-950 dark:text-white" data-item-title>
-            {{ $pageTitles[$item['id']] ?? '' }}
+            {{ $pageTitles[($item['collection'] ?? '') . ':' . $item['id']] ?? '' }}
         </span>
         <button
             type="button"

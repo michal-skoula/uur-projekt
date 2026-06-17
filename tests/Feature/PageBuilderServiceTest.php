@@ -13,9 +13,12 @@ describe('buildAvailableGroups', function (): void {
         $titles = [];
         $groups = PageBuilderService::buildAvailableGroups($titles);
 
-        expect($groups)->toHaveCount(1)
-            ->and($groups[0]['label'])->toBe('Pages')
-            ->and($groups[0]['items'])->toHaveCount(2);
+        $byLabel = collect($groups)->keyBy('label');
+
+        expect($groups)->toHaveCount(2)
+            ->and($byLabel->keys()->all())->toEqualCanonicalizing(['Pages', 'News'])
+            ->and($byLabel['Pages']['slug'])->toBe('pages')
+            ->and($byLabel['Pages']['items'])->toHaveCount(2);
     });
 
     it('populates the savePageTitlesTo map with id => title', function (): void {
@@ -24,7 +27,7 @@ describe('buildAvailableGroups', function (): void {
         $titles = [];
         PageBuilderService::buildAvailableGroups($titles);
 
-        expect($titles)->toHaveKey($page->id, 'My Page');
+        expect($titles)->toHaveKey("pages:{$page->id}", 'My Page');
     });
 
     it('populates savePageTitlesTo for every item across all groups', function (): void {
@@ -34,7 +37,7 @@ describe('buildAvailableGroups', function (): void {
         PageBuilderService::buildAvailableGroups($titles);
 
         foreach ($pages as $page) {
-            expect($titles)->toHaveKey($page->id, $page->title);
+            expect($titles)->toHaveKey("pages:{$page->id}", $page->title);
         }
     });
 
@@ -45,16 +48,25 @@ describe('buildAvailableGroups', function (): void {
         $titles = [];
         $groups = PageBuilderService::buildAvailableGroups($titles);
 
-        expect($groups)->toBeEmpty()
+        $labels = array_column($groups, 'label');
+
+        expect($labels)->not->toContain('Pages')
             ->and($titles)->toBeEmpty();
     });
 
     it('skips collections that do not implement ContentCollectionItem', function (): void {
+        config(['content-collections.collections' => [
+            'pages' => Page::class,
+            'invalid' => stdClass::class,
+        ]]);
+
         $titles = [];
         $groups = PageBuilderService::buildAvailableGroups($titles);
 
         $labels = array_column($groups, 'label');
-        expect($labels)->not->toContain('News');
+
+        expect($labels)->toContain('Pages')
+            ->and($labels)->not->toContain('Invalid');
     });
 
     it('returns an empty array when no collections are registered', function (): void {
@@ -73,47 +85,49 @@ describe('buildAvailableGroups', function (): void {
         $groups = PageBuilderService::buildAvailableGroups($titles);
 
         expect($groups[0]['items'][0])->toBe([
+            'collection' => 'pages',
             'id' => $page->id,
             'title' => 'About Us',
         ]);
     });
 });
 
-describe('findIds', function (): void {
-    it('returns ids from a flat list', function (): void {
+describe('buildCollectionListsFromTree', function (): void {
+    it('groups ids by collection from a flat list', function (): void {
         $items = [
-            ['id' => 1, 'children' => []],
-            ['id' => 2, 'children' => []],
-            ['id' => 3, 'children' => []],
+            ['collection' => 'pages', 'id' => 1, 'children' => []],
+            ['collection' => 'pages', 'id' => 2, 'children' => []],
+            ['collection' => 'pages', 'id' => 3, 'children' => []],
         ];
 
-        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe(['pages' => [1, 2, 3]]);
     });
 
-    it('returns ids from a nested tree', function (): void {
+    it('collects ids from a nested tree under the right collection', function (): void {
         $items = [
-            ['id' => 1, 'children' => [
-                ['id' => 2, 'children' => [
-                    ['id' => 3, 'children' => []],
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'pages', 'id' => 2, 'children' => [
+                    ['collection' => 'pages', 'id' => 3, 'children' => []],
                 ]],
             ]],
         ];
 
-        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe(['pages' => [1, 2, 3]]);
     });
 
-    it('collects ids from multiple branches', function (): void {
+    it('separates ids across multiple collections', function (): void {
         $items = [
-            ['id' => 1, 'children' => [
-                ['id' => 2, 'children' => []],
-                ['id' => 3, 'children' => []],
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'news', 'id' => 10, 'children' => []],
             ]],
-            ['id' => 4, 'children' => [
-                ['id' => 5, 'children' => []],
-            ]],
+            ['collection' => 'news', 'id' => 11, 'children' => []],
+            ['collection' => 'pages', 'id' => 2, 'children' => []],
         ];
 
-        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([1, 2, 3, 4, 5]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([
+            'pages' => [1, 2],
+            'news' => [10, 11],
+        ]);
     });
 
     it('returns an empty array for empty input', function (): void {
@@ -121,8 +135,8 @@ describe('findIds', function (): void {
     });
 
     it('casts ids to int', function (): void {
-        $items = [['id' => '7', 'children' => []]];
+        $items = [['collection' => 'pages', 'id' => '7', 'children' => []]];
 
-        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe([7]);
+        expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe(['pages' => [7]]);
     });
 });

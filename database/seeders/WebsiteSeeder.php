@@ -510,10 +510,11 @@ class WebsiteSeeder extends Seeder
         $settings = app(NavMenuSettings::class);
         $settings->structure = [
             ['collection' => 'pages', 'id' => $pageIds['home'], 'children' => []],
-            ['collection' => 'pages', 'id' => $pageIds['about'], 'children' => []],
+            ['collection' => 'pages', 'id' => $pageIds['about'], 'children' => [
+                ['collection' => 'pages', 'id' => $pageIds['news'], 'children' => []],
+                ['collection' => 'pages', 'id' => $pageIds['contact'], 'children' => []],
+            ]],
             ['collection' => 'pages', 'id' => $pageIds['pricing'], 'children' => []],
-            ['collection' => 'pages', 'id' => $pageIds['news'], 'children' => []],
-            ['collection' => 'pages', 'id' => $pageIds['contact'], 'children' => []],
             ['collection' => 'pages', 'id' => $pageIds['schedule'], 'children' => []],
         ];
         $settings->button_primary = [

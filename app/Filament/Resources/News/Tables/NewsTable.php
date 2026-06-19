@@ -6,6 +6,7 @@ use Awcodes\Curator\Components\Tables\CuratorColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -32,6 +33,13 @@ class NewsTable
                 TextColumn::make('published_at')
                     ->label('Publikováno')
                     ->date('d.m.Y')
+                    ->sortable(),
+
+                TextColumn::make('analytics_count')
+                    ->label(__('analytics.column.visitors'))
+                    ->counts('analytics')
+                    ->icon(Heroicon::Eye)
+                    ->numeric()
                     ->sortable(),
 
                 TextColumn::make('created_at')

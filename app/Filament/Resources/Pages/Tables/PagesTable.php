@@ -30,6 +30,12 @@ class PagesTable
                     ->searchable(),
                 ToggleColumn::make('is_published')
                     ->label(__('resources/page.fields.is_published')),
+                TextColumn::make('analytics_count')
+                    ->label(__('analytics.column.visitors'))
+                    ->counts('analytics')
+                    ->icon(Heroicon::Eye)
+                    ->numeric()
+                    ->sortable(),
             ])
             ->filters([
                 //

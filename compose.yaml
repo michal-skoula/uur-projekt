@@ -1,5 +1,5 @@
 services:
-    uur-project:
+    laravel.test:
         build:
             context: './vendor/laravel/sail/runtimes/8.5'
             dockerfile: Dockerfile

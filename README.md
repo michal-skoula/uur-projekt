@@ -1,1 +1,208 @@
-# Semestrální práce
+# DCPP — modulární CMS (semestrální práce)
+
+Semestrální práce představuje modulární redakční systém (CMS) postavený nad
+frameworkem **Laravel 13** s administračním rozhraním v **Filament 5**
+(Livewire, Alpine.js, Tailwind CSS). Aplikace umožňuje správu obsahu webu skrze
+skladačku sekcí (*page builder*), hierarchický editor navigace, modulární
+nastavení webu a obsahové kolekce. Cílem práce bylo vytvořit administrační
+prostředí s důrazem na použitelnost a uživatelský prožitek (UI/UX), které je
+srozumitelné i pro klienta bez technických znalostí.
+
+---
+
+## 1. Požadavky
+
+Pro běh aplikace je možné zvolit jednu ze dvou cest:
+
+- **Docker (Laravel Sail)** — postačuje nainstalovaný Docker; veškeré závislosti
+  (PHP 8.4, PostgreSQL 18, Node.js) běží v kontejnerech.
+- **Lokální prostředí (Composer)** — vyžaduje lokálně PHP 8.4, Composer,
+  Node.js (npm) a běžící databázi PostgreSQL.
+
+---
+
+## 2. Instalace přes Docker (Laravel Sail)
+
+Doporučený postup, který nevyžaduje žádné lokálně instalované závislosti kromě
+Dockeru.
+
+```bash
+# 1. Příprava konfigurace prostředí
+cp .env.example .env
+
+# 2. Instalace PHP závislostí (jednorázově, skrze pomocný kontejner)
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php84-composer:latest \
+    composer install --ignore-platform-reqs
+
+# 3. Spuštění kontejnerů (aplikace + PostgreSQL)
+./vendor/bin/sail up -d
+
+# 4. Vygenerování aplikačního klíče
+./vendor/bin/sail artisan key:generate
+
+# 5. Migrace databáze a naplnění ukázkovými daty (viz kapitola 4)
+./vendor/bin/sail artisan migrate --seed
+
+# 6. Symbolický odkaz na úložiště médií a sestavení frontendu
+./vendor/bin/sail artisan storage:link
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+```
+
+Po spuštění je aplikace dostupná na adrese **http://localhost**.
+
+> [!info]
+> Pokud se v administraci nebo na webu **nenačítají obrázky** (logo, média,
+> nahrané soubory), zkontrolujte proměnnou prostředí **`APP_HOST`** v souboru
+> `.env`. Adresy obrázků se generují vůči hostiteli aplikace; při nesouladu
+> mezi skutečnou adresou (např. `localhost`) a nastaveným hostitelem vrací
+> server u médií chybu 404. Hodnotu sjednoťte s `APP_URL` a vyčistěte cache
+> příkazem `php artisan config:clear`.
+
+---
+
+## 3. Instalace přes Composer (lokální prostředí)
+
+Postup pro běh nad lokálně nainstalovaným PHP a databází. V repozitáři je
+připraven souhrnný skript `composer setup`, který provede většinu kroků
+najednou.
+
+```bash
+# 1. Příprava konfigurace prostředí
+cp .env.example .env
+
+# Upravte v .env přístup k databázi (DB_HOST, DB_PORT, DB_DATABASE,
+# DB_USERNAME, DB_PASSWORD) dle vašeho lokálního PostgreSQL serveru.
+
+# 2. Souhrnná instalace (install, klíč, migrace, storage:link, build frontendu)
+composer setup
+
+# 3. Naplnění databáze ukázkovými daty (viz kapitola 4)
+php artisan db:seed
+```
+
+Vývojový server je následně možné spustit pomocí:
+
+```bash
+composer dev   # paralelně: php artisan serve, fronta, logy (pail) a vite
+```
+
+---
+
+## 4. Seedování dat a přihlášení
+
+Naplnění databáze ukázkovým obsahem zajišťuje příkaz:
+
+```bash
+php artisan migrate --seed      # při čisté instalaci
+# nebo
+php artisan db:seed             # nad již zmigrovanou databází
+```
+
+`DatabaseSeeder` postupně vytvoří:
+
+- **administrátorský účet**,
+- ukázkový obsah webu — stránky, sekce *page builderu*, navigaci a média
+  (`WebsiteSeeder`),
+- ukázková analytická data pro nástěnku (`AnalyticsSeeder`).
+
+**Přihlašovací údaje** do administrace:
+
+| Pole   | Hodnota                  |
+|--------|--------------------------|
+| E-mail | `admin@example.com`      |
+| Heslo  | `PlsPlsChciJednicku1`    |
+
+> Pro pohodlí hodnocení jsou tyto údaje na přihlašovací obrazovce
+> **předvyplněny**, takže stačí potvrdit formulář.
+
+---
+
+## 5. Struktura projektu — kde co hledat
+
+Aplikace dodržuje standardní adresářovou strukturu Laravelu; níže je přehled
+míst, kam byla umístěna logika specifická pro tuto práci.
+
+### Administrace (Filament)
+
+| Cesta | Obsah |
+|-------|-------|
+| `app/Providers/Filament/` | Konfigurace administračního panelu (cesta `/admin`, barvy, pluginy, branding). |
+| `app/Filament/Resources/` | Filament resources — `Pages` (správa stránek) a `News` (aktuality). |
+| `app/Filament/Pages/` | Vlastní stránky panelu — `CustomDashboard`, `CustomLoginPage`. |
+| `app/Filament/Pages/Settings/` | Stránky nastavení webu (obecné, kontakty, navigace, vyskakovací okno). |
+| `app/Filament/Widgets/` | Widgety nástěnky — analytika, grafy, rychlé akce, editor navigace. |
+| `app/Filament/PageBuilder/Sections/` | Definice (formulářová schémata) jednotlivých sekcí *page builderu*. |
+| `app/Filament/Components/`, `app/Filament/Actions/` | Sdílené komponenty a akce (mj. vyhledávací *spotlight*). |
+
+### Doménová a aplikační logika
+
+| Cesta | Obsah |
+|-------|-------|
+| `app/Models/` | Modely — `Page`, `News`, `Analytics`, `User`. |
+| `app/Settings/` | Třídy nastavení (Spatie Settings) — branding, kontakty, navigace, popup. |
+| `app/Services/` | Služby — `PageBuilderService`, `SitemapService`, `AnalyticsService`. |
+| `app/Http/Controllers/` | Veřejná část webu — `CmsPageController` (vykreslení stránek), `NewsController`. |
+
+### Frontend (veřejný web)
+
+| Cesta | Obsah |
+|-------|-------|
+| `resources/views/page-builder/sections/` | Blade šablony pro vykreslení jednotlivých sekcí. |
+| `resources/views/layouts/`, `resources/views/components/` | Layouty a sdílené komponenty webu. |
+| `routes/web.php` | Routování veřejného webu (catch-all směřuje na `CmsPageController`). |
+
+### Konfigurace
+
+| Cesta | Obsah |
+|-------|-------|
+| `config/page-builder.php` | Registr dostupných sekcí *page builderu*. |
+| `config/content-collections.php` | Definice obsahových kolekcí (např. aktuality). |
+| `config/curator.php` | Konfigurace správce médií (Filament Curator). |
+| `config/filament-search-spotlight.php` | Konfigurace globálního vyhledávání. |
+| `database/seeders/` | Seedery včetně ukázkových mediálních souborů (`seeders/assets`). |
+
+---
+
+## 6. Přehled implementovaných funkcí (důraz na UI/UX)
+
+- **Page builder** — skladání stránek z vývojářem definovaných sekcí (Hero,
+  O nás, Tanec, Galerie, Mapa, Aktuality, Text, Rozvrh). Uživatel sekce volně
+  přidává, řadí (přetahováním) a nastavuje jejich obsah přes přehledné
+  formuláře, aniž by mohl rozbít zamýšlený design.
+- **Editor navigace** — drag-and-drop sestavení hierarchického hlavního menu
+  webu přímo z nástěnky.
+- **Modulární nastavení webu** — oddělené, přehledně členěné stránky nastavení
+  (branding a logo, kontakty, navigace, vyskakovací okno) s infrastrukturou pro
+  snadné přidávání dalších sekcí.
+- **Nástěnka (dashboard)** — analytické přehledy (souhrnné statistiky, graf
+  návštěvnosti, nejnavštěvovanější stránky) a panel rychlých akcí pro
+  nejčastější úkony.
+- **Globální vyhledávání (spotlight)** — vlastní vyhledávací rozhraní, které
+  prohledává nejen obsah, ale i moduly CMS; přístupné klávesovou zkratkou
+  i myší.
+- **Správa médií** — knihovna souborů postavená na Filament Curator
+  (v panelu jako „Soubory").
+- **Obsahové kolekce** — modelově řízený obsah nad rámec *page builderu*
+  (aktuality dostupné na veřejné cestě `/aktuality`).
+- **Vizuální identita administrace** — vynucený tmavý režim, vlastní barevné
+  schéma a branding (logo/favicon) řízený přes nastavení.
+- **Responzivita** — primární zaměření na desktop, plná funkčnost i na menších
+  obrazovkách.
+
+---
+
+## 7. Použití — přístup do administrace
+
+1. Spusťte aplikaci dle kapitoly 2 nebo 3.
+2. Otevřete v prohlížeči adresu administrace:
+   - Docker (Sail): **http://localhost/admin**
+   - Lokální server (`composer dev`): **http://localhost:8000/admin**
+3. Přihlaste se předvyplněnými údaji (viz kapitola 4) a potvrďte formulář.
+
+Veřejnou část webu (vykreslenou *page builderem*) najdete na kořenové adrese
+aplikace (`/`).

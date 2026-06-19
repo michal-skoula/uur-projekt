@@ -47,15 +47,11 @@ Dockeru.
 # 1. Příprava konfigurace prostředí
 cp .env.example .env
 
-# 2. Instalace PHP závislostí (jednorázově, skrze pomocný kontejner)
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php84-composer:latest \
-    composer install --ignore-platform-reqs
+# 2. Buildnutí Docker Compose
+composer require laravel/sail --dev
+./vendor/bin/sail build --no-cache
 
-# 3. Spuštění kontejnerů (aplikace + PostgreSQL)
+# 3. Spuštění přes Docker Compose (aplikace + PostgreSQL)
 ./vendor/bin/sail up -d
 
 # 4. Setup projektu a seed dat
@@ -64,14 +60,6 @@ docker run --rm \
 ```
 
 Po spuštění je aplikace dostupná na adrese **http://localhost**.
-
-> [!info]
-> Pokud se v administraci nebo na webu **nenačítají obrázky** (logo, média,
-> nahrané soubory), zkontrolujte proměnnou prostředí **`APP_HOST`** v souboru
-> `.env`. Adresy obrázků se generují vůči hostiteli aplikace; při nesouladu
-> mezi skutečnou adresou (např. `localhost`) a nastaveným hostitelem vrací
-> server u médií chybu 404. Hodnotu sjednoťte s `APP_URL` a vyčistěte cache
-> příkazem `php artisan config:clear`.
 
 ---
 
@@ -82,14 +70,13 @@ připraven souhrnný skript `composer setup`, který provede většinu kroků
 najednou.
 
 ```bash
-# 1. Příprava konfigurace prostředí
-cp .env.example .env
+
+# 2. Souhrnná instalace (install, klíč, migrace, storage:link, build frontendu
+composer setup
 
 # Upravte v .env přístup k databázi (DB_HOST, DB_PORT, DB_DATABASE,
 # DB_USERNAME, DB_PASSWORD) dle vašeho lokálního PostgreSQL serveru.
-
-# 2. Souhrnná instalace (install, klíč, migrace, storage:link, build frontendu)
-composer setup
+cat .env
 
 # 3. Naplnění databáze ukázkovými daty (viz. kapitola 5)
 php artisan db:seed

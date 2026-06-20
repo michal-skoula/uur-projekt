@@ -56,7 +56,7 @@ composer require laravel/sail --dev
 
 # 4. Setup projektu a seed dat
 ./vendor/bin/sail composer setup
-./vendor/bin/sail php artisan migrate:fresh --seed
+./vendor/bin/sail php artisan migrate:fresh --seed --force
 ```
 
 Po spuštění je aplikace dostupná na adrese **http://localhost**.

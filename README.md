@@ -57,6 +57,7 @@ composer require laravel/sail --dev
 # 4. Setup projektu a seed dat
 ./vendor/bin/sail composer setup
 ./vendor/bin/sail php artisan migrate:fresh --seed --force
+./vendor/bin/sail php artisan config:cache # V pripade 403:Forbidden potreba refreshnout .env
 ```
 
 Po spuštění je aplikace dostupná na adrese **http://localhost**.

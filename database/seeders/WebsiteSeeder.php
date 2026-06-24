@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ContentStatus;
 use App\Models\News;
 use App\Models\Page;
 use App\Settings\ContactSettings;
@@ -161,7 +162,7 @@ class WebsiteSeeder extends Seeder
         $home = Page::create([
             'title' => 'Domů',
             'slug' => '',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->heroSection($m),
                 $this->newsSectionContent(),
@@ -172,7 +173,7 @@ class WebsiteSeeder extends Seeder
         $about = Page::create([
             'title' => 'O nás',
             'slug' => 'o-nas',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->aboutSection($m),
                 $this->gallerySection($m),
@@ -182,7 +183,7 @@ class WebsiteSeeder extends Seeder
         $pricing = Page::create([
             'title' => 'Ceník',
             'slug' => 'cenik',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->pricingSection(),
             ],
@@ -191,7 +192,7 @@ class WebsiteSeeder extends Seeder
         $news = Page::create([
             'title' => 'Aktuality',
             'slug' => 'aktuality',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->newsSectionContent(),
             ],
@@ -200,7 +201,7 @@ class WebsiteSeeder extends Seeder
         $contact = Page::create([
             'title' => 'Kontakt',
             'slug' => 'kontakt',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->contactTextSection(),
                 $this->mapSection(),
@@ -210,7 +211,7 @@ class WebsiteSeeder extends Seeder
         $schedule = Page::create([
             'title' => 'Rozvrh',
             'slug' => 'rozvrh',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED,
             'content' => [
                 $this->timetableSection($m),
             ],
@@ -449,6 +450,7 @@ class WebsiteSeeder extends Seeder
             'thumbnail' => $m['news_1'] ? (string) $m['news_1'] : null,
             'author' => 'Michal Škoula',
             'published_at' => '2025-10-05 10:00:00',
+            'status' => ContentStatus::PUBLISHED,
         ]);
 
         News::create([
@@ -459,6 +461,7 @@ class WebsiteSeeder extends Seeder
             'thumbnail' => $m['news_2'] ? (string) $m['news_2'] : null,
             'author' => 'Michal Škoula',
             'published_at' => '2025-10-05 09:00:00',
+            'status' => ContentStatus::PUBLISHED,
         ]);
 
         News::create([
@@ -469,6 +472,7 @@ class WebsiteSeeder extends Seeder
             'thumbnail' => $m['news_3'] ? (string) $m['news_3'] : null,
             'author' => 'Michal Škoula',
             'published_at' => '2025-09-29 08:00:00',
+            'status' => ContentStatus::PUBLISHED,
         ]);
     }
 

@@ -28,6 +28,7 @@ test('create form loads with its sections', function (): void {
         ->assertFormFieldExists('excerpt')
         ->assertFormFieldExists('content')
         ->assertFormFieldExists('author')
+        ->assertFormFieldExists('status')
         ->assertFormFieldExists('published_at');
 });
 

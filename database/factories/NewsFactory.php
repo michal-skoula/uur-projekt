@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ContentStatus;
 use App\Models\News;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -23,6 +24,22 @@ class NewsFactory extends Factory
             'thumbnail' => null,
             'author' => $this->faker->name(),
             'published_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'status' => ContentStatus::PUBLISHED,
         ];
+    }
+
+    public function published(): static
+    {
+        return $this->state(['status' => ContentStatus::PUBLISHED]);
+    }
+
+    public function draft(): static
+    {
+        return $this->state(['status' => ContentStatus::DRAFT]);
+    }
+
+    public function disabled(): static
+    {
+        return $this->state(['status' => ContentStatus::DISABLED]);
     }
 }

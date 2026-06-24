@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ContentStatus;
 use App\Filament\Resources\Pages\Pages\CreatePage;
 use App\Filament\Resources\Pages\Pages\EditPage;
 use App\Filament\Resources\Pages\Pages\ListPages;
@@ -25,7 +26,7 @@ test('can create a page with a slug', function (): void {
         ->fillForm([
             'title' => 'About Us',
             'slug' => 'about-us',
-            'is_published' => true,
+            'status' => ContentStatus::PUBLISHED->value,
         ])
         ->call('create')
         ->assertHasNoFormErrors()

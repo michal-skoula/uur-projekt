@@ -31,6 +31,7 @@ return [
         'content' => 'Obsah',
         'thumbnail' => 'Náhledový obrázek',
         'author' => 'Autor',
+        'status' => 'Stav',
         'published_at' => 'Datum publikace',
         'published_at_helper' => 'Aktualita se na webu zobrazí od tohoto data a času.',
     ],

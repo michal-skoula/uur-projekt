@@ -30,6 +30,11 @@ class NewsTable
                     ->label('Autor')
                     ->searchable(),
 
+                TextColumn::make('status')
+                    ->label('Stav')
+                    ->badge()
+                    ->sortable(),
+
                 TextColumn::make('published_at')
                     ->label('Publikováno')
                     ->date('d.m.Y')

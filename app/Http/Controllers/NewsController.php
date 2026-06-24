@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use Illuminate\View\View;
 
-class NewsController extends Controller
+class NewsController extends ContentCollectionController
 {
     public function index(): View
     {
         $posts = News::query()
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now())
+            ->published()
             ->orderByDesc('published_at')
             ->paginate(12);
 
@@ -20,6 +19,8 @@ class NewsController extends Controller
 
     public function show(News $news): View
     {
+        $this->guardStatus($news);
+
         return view('news.show', compact('news'));
     }
 }

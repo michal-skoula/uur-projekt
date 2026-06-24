@@ -25,8 +25,7 @@ final class NewsSectionTemplate implements SectionTemplate
         $this->buttonText = $data['button_text'] ?? '';
 
         $this->posts = News::query()
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now())
+            ->published()
             ->orderByDesc('published_at')
             ->limit(3)
             ->get()

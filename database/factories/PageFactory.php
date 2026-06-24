@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ContentStatus;
 use App\Models\Page;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -25,6 +26,17 @@ class PageFactory extends Factory
             'slug' => Str::kebab($title),
             'parent_id' => null,
             'content' => [],
+            'status' => ContentStatus::DRAFT,
         ];
+    }
+
+    public function published(): static
+    {
+        return $this->state(['status' => ContentStatus::PUBLISHED]);
+    }
+
+    public function disabled(): static
+    {
+        return $this->state(['status' => ContentStatus::DISABLED]);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\News\Schemas;
 
+use App\Enums\ContentStatus;
 use Awcodes\Curator\Components\Forms\CuratorPicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -49,6 +51,12 @@ class NewsForm
                     ->description(__('resources/news.sections.publishing.description'))
                     ->columns(1)
                     ->schema([
+                        Select::make('status')
+                            ->label(__('resources/news.fields.status'))
+                            ->options(ContentStatus::class)
+                            ->default(ContentStatus::DRAFT)
+                            ->selectablePlaceholder(false)
+                            ->required(),
                         TextInput::make('author')
                             ->label(__('resources/news.fields.author')),
                         DateTimePicker::make('published_at')

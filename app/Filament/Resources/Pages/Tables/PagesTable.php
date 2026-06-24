@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\Pages\Tables;
 
+use App\Enums\ContentStatus;
 use App\Models\Page;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class PagesTable
@@ -28,8 +29,10 @@ class PagesTable
                     ->formatStateUsing(fn (Page $record): string => $record->getPermalink())
                     ->default('/')
                     ->searchable(),
-                ToggleColumn::make('is_published')
-                    ->label(__('resources/page.fields.is_published')),
+                SelectColumn::make('status')
+                    ->label(__('resources/page.fields.status'))
+                    ->options(ContentStatus::class)
+                    ->selectablePlaceholder(false),
                 TextColumn::make('analytics_count')
                     ->label(__('analytics.column.visitors'))
                     ->counts('analytics')

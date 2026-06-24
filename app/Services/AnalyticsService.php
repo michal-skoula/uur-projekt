@@ -77,17 +77,23 @@ final class AnalyticsService
      */
     public function mostVisitedSubject(): ?ContentCollectionModel
     {
-        $top = $this->query()
+        $candidates = $this->query()
             ->whereNotNull('subject_id')
             ->select('subject_type', 'subject_id')
             ->selectRaw('COUNT(*) as aggregate')
             ->groupBy('subject_type', 'subject_id')
             ->orderByDesc('aggregate')
-            ->first();
+            ->get();
 
-        $subject = $top?->subject;
+        foreach ($candidates as $candidate) {
+            $subject = $candidate->subject;
 
-        return $subject instanceof ContentCollectionModel ? $subject : null;
+            if ($subject instanceof ContentCollectionModel) {
+                return $subject;
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'columns' => [
+        'url' => 'URL',
+        'name' => 'Jméno',
+        'ext' => 'Přípona',
+        'disk' => 'Disk',
+        'directory' => 'Adresář',
+        'visibility' => 'Viditelnost',
+        'size' => 'Velikost',
+        'width' => 'Šířka',
+        'height' => 'Výška',
+        'dimensions' => 'Rozměry',
+        'created_at' => 'Vytvořeno',
+    ],
+    'actions' => [
+        'toggle_table_grid' => 'Mřížka',
+        'toggle_table_list' => 'Seznam',
+    ],
+];

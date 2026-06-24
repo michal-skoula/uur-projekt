@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\HtmlString;
 
-class CmsPageController extends Controller
+class CmsPageController extends ContentCollectionController
 {
     public function __invoke(?string $path, ?User $user = null): View
     {
@@ -41,6 +41,8 @@ class CmsPageController extends Controller
         if (! $lastPage->canView($user)) {
             abort(403);
         }
+
+        $this->guardStatus($lastPage);
 
         return view('page-builder.page-builder', [
             'page' => $lastPage,

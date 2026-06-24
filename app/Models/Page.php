@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\ContentCollectionModel;
+use App\Enums\ContentStatus;
 use Database\Factories\PageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,7 @@ use Illuminate\Support\Collection;
  * @property string $title
  * @property string $slug
  * @property list<array{type: string, data: array<string, mixed>}> $content
- * @property bool $is_published
+ * @property ContentStatus $status
  */
 class Page extends ContentCollectionModel
 {
@@ -27,7 +28,7 @@ class Page extends ContentCollectionModel
         'title',
         'slug',
         'content',
-        'is_published',
+        'status',
     ];
 
     /**
@@ -37,7 +38,7 @@ class Page extends ContentCollectionModel
     {
         return [
             'content' => 'array',
-            'is_published' => 'boolean',
+            'status' => ContentStatus::class,
         ];
     }
 

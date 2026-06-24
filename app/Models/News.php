@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\ContentCollectionModel;
+use App\Enums\ContentStatus;
 use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -20,11 +21,13 @@ class News extends ContentCollectionModel
         'thumbnail',
         'author',
         'published_at',
+        'status',
     ];
 
     /** @var array<string, string> */
     protected $casts = [
         'published_at' => 'datetime',
+        'status' => ContentStatus::class,
     ];
 
     public function getName(): string

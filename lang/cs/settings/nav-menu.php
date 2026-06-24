@@ -27,8 +27,6 @@ return [
             'empty' => 'Přetáhněte sem položky pro sestavení menu.',
         ],
         'notifications' => [
-            'save_failed_title' => 'Uložení selhalo',
-            'save_failed_body' => 'Nalezeno :count neplatných ID: :ids',
             'saved_title' => 'Menu uloženo',
         ],
     ],

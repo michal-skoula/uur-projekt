@@ -10,18 +10,17 @@ interface ConfiguresNavBuilder
     public array $structure { get; set; }
 
     /**
-     * Checks whether the tree contains the given page.
+     * Checks whether the tree contains the given page item.
      *
-     * @param ContentCollectionModel $page The page to look for.
-     * @return bool
+     * @param  ContentCollectionItem  $page  The page to look for.
      */
-    public function containsPage(ContentCollectionModel $page): bool;
+    public function containsItem(ContentCollectionItem $page): bool;
 
     /**
-     * Removes any instance of the page inside the $structure array.
+     * Removes any instance of the page item inside the $structure array.
      *
-     * @param ContentCollectionModel $page The page to be removed.
+     * @param  ContentCollectionItem  $page  The page to be removed.
      * @return bool Determines whether at least one page was removed.
      */
-    public function removePage(ContentCollectionModel $page): bool;
+    public function removeItem(ContentCollectionItem $page): bool;
 }

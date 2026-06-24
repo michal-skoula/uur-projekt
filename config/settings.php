@@ -20,6 +20,17 @@ return [
         Settings\PopupSettings::class,
     ],
 
+    /**
+     * Each settings class representing a navigation menu.
+     * Register settings pages you want to be updated automatically
+     * when a page is deleted, visibility changes etc.
+     *
+     * @see \App\Observers\ContentCollectionObserver
+     */
+    'menu_configuration_settings' => [
+        Settings\NavMenuSettings::class,
+    ],
+
     /*
      * The path where the settings classes will be created.
      */

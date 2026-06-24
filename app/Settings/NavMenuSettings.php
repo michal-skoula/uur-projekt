@@ -2,14 +2,15 @@
 
 namespace App\Settings;
 
+use App\Contracts\ConfiguresNavBuilder;
 use Spatie\LaravelSettings\Settings;
 
-class NavMenuSettings extends Settings
+class NavMenuSettings extends Settings implements ConfiguresNavBuilder
 {
     /**
      * @phpstan-var list<array{collection: string, id: int, children: array<int, mixed>}>
      */
-    public array $structure;
+     public array $structure;
 
     /**
      * @phpstan-var array{text?: string, link?: array{type?: string, url?: string|int|null}}|null

@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'placeholder' => 'Search…',
+    'placeholder' => 'Hledat…',
 
     'empty_state' => [
-        'prompt' => 'Start typing to search.',
-        'no_results' => 'No results for ":query".',
+        'prompt' => 'Začněte psát pro vyhledávání.',
+        'no_results' => 'Žádné výsledky pro „:query".',
     ],
 
     'keys' => [
@@ -13,18 +13,18 @@ return [
     ],
 
     'groups' => [
-        'records' => 'Records',
-        'resources' => 'Resources',
-        'pages' => 'Pages',
-        'actions' => 'Actions',
-        'recent' => 'Recent',
-        'pinned' => 'Pinned',
+        'records' => 'Záznamy',
+        'resources' => 'Zdroje',
+        'pages' => 'Stránky',
+        'actions' => 'Akce',
+        'recent' => 'Nedávné',
+        'pinned' => 'Připnuté',
     ],
 
     'actions' => [
         'create' => [
-            'group' => 'Create',
-            'label' => 'Create :label',
+            'group' => 'Vytvořit',
+            'label' => 'Vytvořit :label',
         ],
     ],
 ];

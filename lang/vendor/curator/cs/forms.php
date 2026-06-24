@@ -4,28 +4,33 @@ declare(strict_types=1);
 
 return [
     'sections' => [
-        'details' => 'Detaily',
-        'exif' => 'Exif',
+        'details' => 'Podrobnosti',
+        'exif' => 'Exif data',
         'file' => 'Soubor',
         'meta' => 'Meta',
         'preview' => 'Náhled',
-        'upload_new' => 'Nahrát nový',
-        'upload_new_helper' => 'Pokuď máte vytvořené nějaké ořezy pro toto médium, budete je možná muset znovu vytvořit, nebude se to dít automaticky.',
-        'curation' => 'Ořez',
+        'replace' => 'Nahradit',
+        'upload_new_helper' => 'Pokud máte pro toto médium vytvořené nějaké ořezy, budete je pravděpodobně muset vytvořit znovu — neproběhne to automaticky.',
+        'curation' => 'Ořezy',
     ],
     'fields' => [
         'alt' => 'Alternativní text',
         'alt_hint' => 'Alt?',
-        'caption' => 'Legenda',
-        'description' => 'Popis',
+        'caption' => 'Popisek',
+        'description' => 'Informace',
         'file' => 'Soubor',
-        'title' => 'Název',
-        'name' => 'Jméno',
+        'title' => 'Titulek',
+        'name' => 'Název souboru',
     ],
     'notices' => [
-        'success' => 'Úspěšně upraveno.',
+        'success' => 'Položka byla úspěšně upravena.',
     ],
     'curations' => [
         'button_label' => 'Vytvořit ořez',
+    ],
+    'multi_upload' => [
+        'action_label' => 'Nahrát více souborů',
+        'modal_heading' => 'Nahrát více souborů',
+        'modal_file_label' => 'Soubory',
     ],
 ];

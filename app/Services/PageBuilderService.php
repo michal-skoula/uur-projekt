@@ -57,7 +57,7 @@ final class PageBuilderService
      * Recursively walks a tree of items and groups the IDs found by collection slug.
      *
      * @param  array<int, array{collection: string, id: int, children: array<int, mixed>}>  $items
-     * @return array<string, array<int, int>>
+     * @return array<string, list<int>>
      */
     public static function buildCollectionListsFromTree(array $items): array
     {
@@ -74,5 +74,31 @@ final class PageBuilderService
         }
 
         return $collections;
+    }
+
+    /**
+     * Removes any items from the passed tree, including their children if they have any, found in the `$items` array.
+     *
+     * @param  list<array{collection: string, id: int, children: array<int, mixed>}>  $tree  The tree to update
+     * @param  list<array{string, int}>  $items  The items to remove
+     * @return list<array{collection: string, id: int, children: array<int, mixed>}>
+     */
+    public static function removeInvalidItemsFromTree(array $tree, array $items): array
+    {
+        $filtered = [];
+
+        foreach ($tree as $node) {
+            if (in_array([(string) $node['collection'], (int) $node['id']], $items, true)) {
+                continue;
+            }
+
+            /** @var list<array{collection: string, id: int, children: array<int, mixed>}> $children */
+            $children = $node['children'];
+            $node['children'] = self::removeInvalidItemsFromTree($children, $items);
+
+            $filtered[] = $node;
+        }
+
+        return $filtered;
     }
 }

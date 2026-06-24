@@ -1,5 +1,6 @@
 <?php
 
+use App\Observers\ContentCollectionObserver;
 use App\Settings;
 use Spatie\LaravelSettings\SettingsCasts\DataCast;
 use Spatie\LaravelSettings\SettingsCasts\DateTimeInterfaceCast;
@@ -18,6 +19,17 @@ return [
         Settings\ContactSettings::class,
         Settings\NavMenuSettings::class,
         Settings\PopupSettings::class,
+    ],
+
+    /**
+     * Each settings class representing a navigation menu.
+     * Register settings pages you want to be updated automatically
+     * when a page is deleted, visibility changes etc.
+     *
+     * @see ContentCollectionObserver
+     */
+    'menu_configuration_settings' => [
+        Settings\NavMenuSettings::class,
     ],
 
     /*

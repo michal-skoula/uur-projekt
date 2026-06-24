@@ -1,5 +1,8 @@
 # Semestrální práce KIV/UUR - Modulární Redakční Systém (CMS)
 
+> [!success] Dokumentace změn
+> Dokumentaci změn v zadání zkoušky najdete v [Pull Requestech repozitáře](https://github.com/michal-skoula/uur-projekt/pulls?q=is%3Apr+is%3Aopen%2Cclosed)
+
 V semestrální práci jsem si dal za cíl vytvořit modulární redakční systém (CMS), který můžu použít ve vlastním podnikání a nabídnout klientům lepší UX oproti existujícím systémům. 
 
 Vytvořený v PHP, frameworku **Laravel 13** s administračním rozhraním v **Filament 5**

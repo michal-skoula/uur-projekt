@@ -140,3 +140,81 @@ describe('buildCollectionListsFromTree', function (): void {
         expect(PageBuilderService::buildCollectionListsFromTree($items))->toBe(['pages' => [7]]);
     });
 });
+
+describe('removeInvalidItemsFromTree', function (): void {
+    it('removes a matching top-level item', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => []],
+            ['collection' => 'pages', 'id' => 2, 'children' => []],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, [['pages', 1]]))->toBe([
+            ['collection' => 'pages', 'id' => 2, 'children' => []],
+        ]);
+    });
+
+    it('removes a nested item while keeping its parent and siblings', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'pages', 'id' => 2, 'children' => []],
+                ['collection' => 'news', 'id' => 5, 'children' => []],
+            ]],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, [['pages', 2]]))->toBe([
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'news', 'id' => 5, 'children' => []],
+            ]],
+        ]);
+    });
+
+    it('removes the entire subtree when a parent matches', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'pages', 'id' => 2, 'children' => [
+                    ['collection' => 'pages', 'id' => 3, 'children' => []],
+                ]],
+            ]],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, [['pages', 1]]))->toBe([]);
+    });
+
+    it('only removes items matching both collection and id', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => []],
+            ['collection' => 'news', 'id' => 1, 'children' => []],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, [['pages', 1]]))->toBe([
+            ['collection' => 'news', 'id' => 1, 'children' => []],
+        ]);
+    });
+
+    it('removes multiple items across different levels', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'pages', 'id' => 2, 'children' => []],
+            ]],
+            ['collection' => 'news', 'id' => 10, 'children' => []],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, [['pages', 2], ['news', 10]]))->toBe([
+            ['collection' => 'pages', 'id' => 1, 'children' => []],
+        ]);
+    });
+
+    it('returns the tree unchanged when no items are passed', function (): void {
+        $tree = [
+            ['collection' => 'pages', 'id' => 1, 'children' => [
+                ['collection' => 'pages', 'id' => 2, 'children' => []],
+            ]],
+        ];
+
+        expect(PageBuilderService::removeInvalidItemsFromTree($tree, []))->toBe($tree);
+    });
+
+    it('returns an empty array for an empty tree', function (): void {
+        expect(PageBuilderService::removeInvalidItemsFromTree([], [['pages', 1]]))->toBe([]);
+    });
+});

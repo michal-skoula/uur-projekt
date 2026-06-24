@@ -5,8 +5,6 @@ namespace App\Models;
 use App\Contracts\ContentCollectionModel;
 use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class News extends ContentCollectionModel
 {

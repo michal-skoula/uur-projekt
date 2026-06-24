@@ -48,49 +48,46 @@ new class extends LivewireComponent {
         $collections = config('content-collections.collections', []);
         $disabled = config('content-collections.disabled', []);
 
-        $invalidIds = [];
+        /** @var list<array{string, int}> */
+        $toRemove = [];
 
-        foreach ($lists as $slug => $ids) {
-            $class = $collections[$slug] ?? null;
-
-            if (in_array($slug, $disabled, true) || ! is_a($class, ContentCollectionItem::class, true)) {
-                Log::warning("Skipping unknown or disabled collection '$slug' attempted to save in PageBuilder");
-                $invalidIds = array_merge($invalidIds, $ids);
-
+        // Find items to remove
+        foreach ($lists as $collectionSlug => $ids)
+        {
+            if (!in_array($collectionSlug, $disabled, true))
                 continue;
+
+            $collectionClass = $collections[$collectionSlug] ?? null;
+            if (! is_a($collectionClass, ContentCollectionModel::class, true))
+                continue;
+
+            /** @var class-string<ContentCollectionModel> $collectionClass */
+
+            /** @var int[] $validItems */
+            $validItems = $collectionClass::query()->whereIn('id', $ids)->pluck('id')->all();
+            foreach ($ids as $id)
+            {
+                if (in_array($id, $validItems))
+                    continue;
+
+                $toRemove[] = [$collectionSlug, $id];
             }
-
-            /** @var class-string<ContentCollectionModel> $class */
-            $foundIds = $class::whereIn('id', $ids)->pluck('id')->all();
-            $invalidIds = array_merge($invalidIds, array_diff($ids, $foundIds));
         }
 
-        if ($invalidIds) {
-            Notification::make()
-                ->title(__('settings/nav-menu.builder.notifications.save_failed_title'))
-                ->body(__('settings/nav-menu.builder.notifications.save_failed_body', [
-                    'count' => count($invalidIds),
-                    'ids' => implode(', ', $invalidIds),
-                ]))
-                ->danger()
-                ->send();
-
-            return;
-        }
-
-        $settings->structure = $structure;
+        $newStructure = PageBuilderService::removeInvalidItemsFromTree($structure, $toRemove);
+        $settings->structure = $newStructure;
         $settings->save();
 
         // Needed to update the menu on the frontend too, not just db
-        $this->menuStructure = $structure;
+        $this->menuStructure = $newStructure;
+
+        // todo: send a warning message that not all items were saved if $toRemove isn't empty.
 
         Notification::make()
             ->title(__('settings/nav-menu.builder.notifications.saved_title'))
             ->success()
             ->send();
     }
-
-
 };
 ?>
 

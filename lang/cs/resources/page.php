@@ -17,7 +17,7 @@ return [
         'parent' => 'Nadřazená stránka',
         'parent_placeholder' => 'Stránka nejvyšší úrovně',
         'parent_helper' => 'Umístění stránky v hierarchii webu.',
-        'is_published' => 'Publikováno',
+        'status' => 'Stav',
     ],
     'actions' => [
         'visit' => 'Zobrazit',

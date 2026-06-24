@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Pages\Schemas;
 
+use App\Enums\ContentStatus;
 use App\Helpers\CmsSectionsHelper;
 use App\Models\Page;
 use App\Rules\UniqueHomepageSlug;
@@ -9,7 +10,6 @@ use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -65,9 +65,12 @@ class PageForm
                             ->searchable()
                             ->preload()
                             ->visible(fn (Get $get): bool => filled($get('slug'))),
-                        Toggle::make('is_published')
-                            ->label(__('resources/page.fields.is_published'))
-                            ->inline(),
+                        Select::make('status')
+                            ->label(__('resources/page.fields.status'))
+                            ->options(ContentStatus::class)
+                            ->default(ContentStatus::DRAFT)
+                            ->selectablePlaceholder(false)
+                            ->required(),
                     ]),
                 Builder::make('content')
                     ->blocks(CmsSectionsHelper::blocks())

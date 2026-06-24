@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Analytics;
+use App\Models\Page;
 use App\Services\AnalyticsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -42,4 +43,35 @@ test('dailyVisits with endDaysAgo returns the preceding period and excludes curr
     ])
         ->and($series['2026-06-10'])->toBe(3)
         ->and(array_sum($series))->toBe(3);
+});
+
+test('mostVisitedSubject returns the content item with the most visits', function (): void {
+    $popular = Page::factory()->create();
+    $quiet = Page::factory()->create();
+
+    Analytics::factory()->count(5)->forSubject($popular)->create();
+    Analytics::factory()->count(2)->forSubject($quiet)->create();
+
+    expect(app(AnalyticsService::class)->mostVisitedSubject()->is($popular))->toBeTrue();
+});
+
+test('mostVisitedSubject skips deleted subjects and falls back to the next existing one', function (): void {
+    $deleted = Page::factory()->create();
+    $existing = Page::factory()->create();
+
+    // The deleted page is the most visited, but can no longer be displayed.
+    Analytics::factory()->count(10)->forSubject($deleted)->create();
+    Analytics::factory()->count(3)->forSubject($existing)->create();
+
+    $deleted->delete();
+
+    expect(app(AnalyticsService::class)->mostVisitedSubject()->is($existing))->toBeTrue();
+});
+
+test('mostVisitedSubject returns null when no subject still exists', function (): void {
+    $deleted = Page::factory()->create();
+    Analytics::factory()->count(4)->forSubject($deleted)->create();
+    $deleted->delete();
+
+    expect(app(AnalyticsService::class)->mostVisitedSubject())->toBeNull();
 });

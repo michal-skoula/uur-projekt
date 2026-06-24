@@ -29,7 +29,7 @@ class AnalyticsOverview extends StatsOverviewWidget
             Stat::make(__('analytics.stats.most_visited'), $mostVisited?->getName() ?? __('analytics.stats.none'))
                 ->icon(Heroicon::Trophy)
                 ->description(__('analytics.stats.most_visited_number', [
-                    'num' => $mostVisited->analytics()->count()]
+                    'num' => $mostVisited?->analytics()?->count() ?? '?']
                 )),
 
             Stat::make(__('analytics.stats.total_pages'), number_format($analytics->totalContentItems()))

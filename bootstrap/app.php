@@ -24,8 +24,17 @@ return Application::configure(basePath: dirname(__DIR__))
         // Render a dedicated, Filament-styled error page for the admin panel.
         // Public requests fall through (return nothing) to Laravel's default
         // resolution, which renders the frontend `errors.*` views.
-        $exceptions->render(function (HttpExceptionInterface $e, Request $request) {
+        $exceptions->render(function (Throwable $e, Request $request) {
             if (! $request->is('admin', 'admin/*')) {
+                return null;
+            }
+
+            $isHttpException = $e instanceof HttpExceptionInterface;
+
+            // Let Laravel's detailed debug page handle genuine, unexpected
+            // exceptions in local development. Intentional HTTP errors
+            // (abort(), 404, 403, …) always get the friendly page.
+            if (! $isHttpException && config('app.debug')) {
                 return null;
             }
 
@@ -34,11 +43,14 @@ return Application::configure(basePath: dirname(__DIR__))
             // layout to resolve its theme, branding, and dashboard URL.
             Filament::setCurrentPanel('admin');
 
-            $status = $e->getStatusCode();
+            $status = $isHttpException ? $e->getStatusCode() : 500;
             $view = View::exists("errors.filament.{$status}")
                 ? "errors.filament.{$status}"
                 : 'errors.filament.'.($status < 500 ? '4xx' : '5xx');
 
-            return response()->view($view, ['exception' => $e], $status, $e->getHeaders());
+            return response()->view($view, [
+                'exception' => $e,
+                'status' => $status,
+            ], $status, $isHttpException ? $e->getHeaders() : []);
         });
     })->create();

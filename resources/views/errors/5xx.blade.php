@@ -36,7 +36,7 @@
         @if ($logoUrl)
             <img src="{{ $logoUrl }}" alt="{{ $siteName }}" class="mx-auto mb-8 h-16">
         @endif
-        <p class="text-gradient-secondary mb-4 font-serif text-7xl md:text-8xl">{{ $code }}</p>
+        <p class="text-gradient-secondary mb-4 font-serif text-4xl md:text-5xl">{{ $code }}</p>
         <h1 class="mb-4">{{ $title }}</h1>
         <p class="mb-8 text-gray">{{ $message }}</p>
         <a href="{{ url('/') }}" class="btn-primary">{{ __('errors.back_home') }}</a>

@@ -1,7 +1,11 @@
 @php
     use Illuminate\Support\Facades\Lang;
+    use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-    $code = $exception->getStatusCode();
+    // The handler passes a resolved $status; fall back to the exception for
+    // direct renders. A raw Throwable (real 500) has no getStatusCode().
+    $code = $status
+        ?? (($exception ?? null) instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500);
     $tier = $code < 500 ? '4xx' : '5xx';
     $title = Lang::has("errors.codes.{$code}.title")
         ? __("errors.codes.{$code}.title")

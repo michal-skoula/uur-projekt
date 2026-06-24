@@ -16,7 +16,7 @@
 @section('content')
     <section class="section bg-primary-darkest flex min-h-[60vh] items-center">
         <div class="max-content-width w-full text-center">
-            <p class="text-gradient-secondary mb-4 font-serif text-7xl md:text-8xl">{{ $code }}</p>
+            <p class="text-gradient-secondary mb-4 font-serif text-4xl md:text-5xl">{{ $code }}</p>
             <h1 class="mb-4">{{ $title }}</h1>
             <p class="mx-auto mb-8 max-w-xl text-gray">{{ $message }}</p>
             <a href="{{ url('/') }}" class="btn-primary">{{ __('errors.back_home') }}</a>
